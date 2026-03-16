@@ -2,14 +2,16 @@
 상세페이지 블록 에디터(`/projects/:id/compose`) 전용 컴포넌트.
 
 ## Files
-- `compose-shell.tsx` — 3패널 레이아웃 쉘 + DndContext 래퍼 (팔레트↔캔버스 통합 드래그) + 자동 저장 + Undo/Redo
-- `compose-context.tsx` — ComposeProvider + useCompose() 훅 (projectId, theme 전달)
+- `compose-shell.tsx` — 3패널 레이아웃 쉘 + DndContext 래퍼 (팔레트↔캔버스 통합 드래그) + 자동 저장 + Undo/Redo + 우측 탭 전환
+- `compose-context.tsx` — ComposeProvider + useCompose() 훅 (projectId, theme, projectStatus 전달)
 - `compose-toolbar.tsx` — 상단 도구바 (저장, 미리보기, 내보내기, AI 생성, 디자인 점검, 전체 수정, 모바일/데스크탑 전환 토글, 플랫폼 선택)
 - `block-palette.tsx` — 좌측 18종 블록 팔레트 (클릭 추가 + useDraggable 드래그 추가)
 - `block-canvas.tsx` — SortableContext 기반 세로 정렬 캔버스 (DndContext는 compose-shell, insertIndex 삽입 인디케이터, useDroppable 드롭존, 가드레일+자동수정, lockLayout, 모바일 375px 프리뷰)
 - `block-dispatch.tsx` — 편집/미리보기 공용 블록 타입 디스패처 (`readOnly` 지원)
 - `block-surface-frame.tsx` — 편집/결과/내보내기 공용 표면 래퍼 (platform width + mobile shell + theme CSS 변수)
-- `block-properties-panel.tsx` — 우측 블록 타입별 동적 설정 패널 (ImagePicker + FontPicker + ColorStylePicker, 오버레이 편집기: 9방향 정렬+위치/크기/색상/굵기/정렬/글꼴)
+- `block-properties-panel.tsx` — 우측 블록 타입별 동적 설정 패널 (ImagePicker + FontPicker + ColorStylePicker + ImageGenerateAction, 오버레이 편집기: 9방향 정렬+위치/크기/색상/굵기/정렬/글꼴)
+- `right-panel.tsx` — 우측 패널 탭 래퍼 (속성/AI허브 탭 전환)
+- `ai-hub-panel.tsx` — AI 생성 허브 패널 (이미지 생성·영상 렌더링·썸네일·마케팅 스크립트 4섹션 아코디언, status 가드)
 - `image-picker.tsx` — 이미지 선택/교체 팝오버 (파일 업로드 + URL 입력)
 - `text-overlay-editor.tsx` — 텍스트 오버레이 편집기 (드래그 위치, 글꼴, 크기, 색상, 굵기) — 레거시, hero-block에 직접 구현으로 대체
 - `theme-picker.tsx` — 7종 테마 프리셋 선택 + 커스텀 색상 편집

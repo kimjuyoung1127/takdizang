@@ -1,6 +1,6 @@
 # Feature Matrix
 
-Last Updated: 2026-03-16 (KST, UI 완성도 개선 + 컴포즈 에디터 크로스모드 통합)
+Last Updated: 2026-03-16 (KST, 컴포즈 AI 생성 허브 통합)
 Status enum: `Not Started | In Progress | Done | Blocked | Deferred`
 
 | ID | Feature | Status | Owner | Notes |
@@ -32,3 +32,7 @@ Status enum: `Not Started | In Progress | Done | Blocked | Deferred`
 | COMPOSE-004 | Remove-bg in-block integration | Done | claude | RemoveBgAction → hero/image-full/image-text |
 | COMPOSE-005 | Product URL auto-fill | Not Started | unassigned | URL → 상품 정보 크롤링 → 블록 자동 채움 |
 | COMPOSE-006 | Version history | Not Started | unassigned | 저장 이력 비교/복원 |
+| COMPOSE-007 | Block text generation UX (tone/prompt/preview) | Done | claude | 톤 프리셋 5종 + 자유 프롬프트 + 미리보기/재생성 플로우 |
+| COMPOSE-008 | Model compose prompt input | Done | claude | 스타일/포즈 프롬프트 입력 → briefText와 결합 |
+| COMPOSE-009 | AI image generation in-block | Done | claude | ImageGenerateAction → hero/image-full/image-text |
+| COMPOSE-010 | AI Hub right panel (tab split) | Done | claude | 속성/AI허브 탭, 이미지·영상·썸네일·스크립트 4섹션 + status 가드 |

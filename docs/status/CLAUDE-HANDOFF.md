@@ -1,43 +1,44 @@
 # Claude Handoff
 
-Last Updated: 2026-03-16 (KST, UI 완성도 개선 + 컴포즈 에디터 크로스모드 통합)
+Last Updated: 2026-03-16 (KST, 컴포즈 AI 생성 허브 통합)
 Branch: `main`
 
 ## Current Snapshot
-- UI 완성도 개선 완료: seed 데이터, 텍스트 정리, 카드 레이아웃 조정
-- 컴포즈 에디터에 4가지 AI 기능 통합 완료:
-  - Scene Compose (배경 합성) — 기존
-  - Model Compose (모델컷 합성) — 신규
-  - Remove BG (배경 제거) — 신규
-  - Block Text Generator (블록별 AI 문구) — 신규
-- 워크스페이스 에셋 브라우저로 프로젝트 간 이미지 공유 가능
-- Playwright 시각 테스트 환경 구축 (12개 테스트, 기준선 저장)
+- 컴포즈 페이지를 모든 AI 기능의 중앙 허브로 확장 완료
+- 우측 패널 탭 분리: 속성 편집 ↔ AI 허브
+- 블록 텍스트 생성 UX 개선: 톤 5종 + 프롬프트 + 미리보기/재생성
+- 모델컷 합성에 스타일/포즈 프롬프트 입력 추가
+- 이미지 블록(hero/image-full/image-text)에서 직접 AI 이미지 생성 가능
+- AI 허브 패널: 이미지 생성 / 영상 렌더링 / 썸네일 / 마케팅 스크립트 4개 섹션
+- Status 가드: generated/exported 상태에서만 AI 허브 기능 활성
 
-## Recent Commits (2026-03-16)
-1. `81e366d` feat(compose): 워크스페이스 에셋 브라우저 추가
-2. `c5b45b8` feat(compose): 블록별 AI 문구 생성 기능 추가
-3. `b953102` feat(compose): 모델컷 합성 및 배경 제거 블록 내 통합
-4. `b1e5be2` docs: 컴포즈 에디터 개선 체크리스트 완료 표시
+## Recent Changes (2026-03-16, AI Hub)
+### 수정 파일
+- `src/app/api/projects/[id]/generate-block-text/route.ts` — tone/userPrompt 파라미터 추가
+- `src/app/api/projects/[id]/model-compose/route.ts` — prompt 파라미터 추가
+- `src/lib/api-client.ts` — generateBlockText, startModelCompose 시그니처 확장
+- `src/components/compose/shared/block-text-generator.tsx` — 확장 패널 리라이트
+- `src/components/compose/shared/model-compose-action.tsx` — 프롬프트 입력 추가
+- `src/components/compose/block-properties-panel.tsx` — renderPreview + ImageGenerateAction
+- `src/components/compose/compose-shell.tsx` — RightPanel 교체 + 탭 state
+- `src/components/compose/compose-context.tsx` — projectStatus 추가
+- `src/app/projects/[id]/compose/page.tsx` — projectStatus 전달
+
+### 신규 파일
+- `src/components/compose/shared/image-generate-action.tsx` — AI 이미지 생성 액션
+- `src/components/compose/ai-hub-panel.tsx` — AI 허브 패널 (4섹션 아코디언)
+- `src/components/compose/right-panel.tsx` — 탭 래퍼 (속성/AI허브)
 
 ## Important Open Issues
-- `GEMINI_API_KEY` leak 플래그 → 마케팅 스크립트 스모크 차단
-- `KIE_API_KEY` 크레딧 부족 → 썸네일 스모크 차단
-- 홈 카드 레이아웃 3열 vs 4열 → 사용자 피드백 대기
-
-## New API Routes (2026-03-16)
-- `GET /api/workspace/assets` — 워크스페이스 전체 에셋 조회
-- `POST /api/projects/[id]/generate-block-text` — 블록 타입별 AI 문구 생성
-
-## New Components (2026-03-16)
-- `src/components/compose/shared/block-text-generator.tsx`
-- `src/components/compose/shared/model-compose-action.tsx`
-- `src/components/compose/shared/remove-bg-action.tsx`
+- `GEMINI_API_KEY` 주석 처리 상태 → 블록 텍스트 생성 실제 호출 불가
+- `KIE_API_KEY` 크레딧 부족 → 이미지 생성/모델컷/썸네일 실제 호출 불가
+- `generate-images` API에 `status === "generated"` 가드 → 블록 내 ImageGenerateAction에서 draft 프로젝트일 때 409 발생 가능
 
 ## Recommended Next Steps
-1. `GEMINI_API_KEY` 교체 → 마케팅 스크립트 + 블록 텍스트 생성 E2E 확인
-2. `KIE_API_KEY` 충전 → 모델컷/누끼/썸네일 E2E 확인
-3. 카드 레이아웃 피드백 반영
-4. 컴포즈 추가 기능: 상품 URL 자동 채움, 버전 히스토리
+1. `GEMINI_API_KEY` 활성화 → 블록 텍스트 생성 E2E 확인
+2. `KIE_API_KEY` 충전 → 이미지 생성/모델컷/썸네일 E2E 확인
+3. `generate-images` status 가드 완화 검토 (컴포즈 블록 내 호출 시)
+4. 영상 렌더링 / 마케팅 스크립트 AI 허브 E2E 확인
 
 ## Validation Commands
 - `npm run build`

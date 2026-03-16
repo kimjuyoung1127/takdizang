@@ -9,3 +9,4 @@ export { SceneComposeAction } from "./scene-compose-action";
 export { ModelComposeAction } from "./model-compose-action";
 export { RemoveBgAction } from "./remove-bg-action";
 export { FontPicker } from "./font-picker";
+export { ImageGenerateAction } from "./image-generate-action";

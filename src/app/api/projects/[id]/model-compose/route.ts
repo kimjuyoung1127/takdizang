@@ -15,6 +15,7 @@ export async function POST(
   const body = await request.json().catch(() => ({}));
   const assetId: string | undefined = body.assetId;
   const aspectRatio: string = body.aspectRatio ?? "1:1";
+  const userPrompt: string | undefined = body.prompt;
 
   if (!assetId) {
     return jsonError("Missing assetId", 400);
@@ -44,6 +45,11 @@ export async function POST(
       promptText = content.briefText ?? project.briefText ?? "";
     } catch {
       promptText = project.briefText ?? "";
+    }
+
+    // Combine project brief with user-provided prompt
+    if (userPrompt?.trim()) {
+      promptText = promptText ? `${promptText}\n\n${userPrompt.trim()}` : userPrompt.trim();
     }
 
     if (!promptText) {

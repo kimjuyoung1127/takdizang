@@ -226,7 +226,7 @@ export function pollRemoveBg(projectId: string, jobId: string) {
 
 export function startModelCompose(
   projectId: string,
-  opts?: { assetId?: string; aspectRatio?: string },
+  opts?: { assetId?: string; aspectRatio?: string; prompt?: string },
 ) {
   return post<AsyncJobResponse>(`/api/projects/${projectId}/model-compose`, opts);
 }
@@ -299,7 +299,7 @@ export function getWorkspaceAssets() {
 
 export function generateBlockText(
   projectId: string,
-  opts: { blockType: string; context?: string },
+  opts: { blockType: string; context?: string; tone?: string; userPrompt?: string },
 ) {
   return post<{ blockType: string; result: Record<string, unknown> }>(
     `/api/projects/${projectId}/generate-block-text`,

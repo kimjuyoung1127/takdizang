@@ -21,6 +21,7 @@ export function ModelComposeAction({ projectId, imageUrl, onImageChange }: Props
   const [open, setOpen] = useState(false);
   const [assets, setAssets] = useState<AssetRecord[]>([]);
   const [selectedAssetId, setSelectedAssetId] = useState<string | null>(null);
+  const [prompt, setPrompt] = useState("");
   const abortRef = useRef(false);
   const pollTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -65,6 +66,7 @@ export function ModelComposeAction({ projectId, imageUrl, onImageChange }: Props
     try {
       const { jobId } = await startModelCompose(projectId, {
         assetId: selectedAssetId ?? undefined,
+        prompt: prompt.trim() || undefined,
       });
 
       while (!abortRef.current) {
@@ -94,7 +96,7 @@ export function ModelComposeAction({ projectId, imageUrl, onImageChange }: Props
     } finally {
       setRunning(false);
     }
-  }, [projectId, selectedAssetId, onImageChange, running, waitForNextPoll]);
+  }, [projectId, selectedAssetId, prompt, onImageChange, running, waitForNextPoll]);
 
   if (!imageUrl) return null;
 
@@ -151,6 +153,20 @@ export function ModelComposeAction({ projectId, imageUrl, onImageChange }: Props
           ))}
         </div>
       )}
+
+      <input
+        type="text"
+        placeholder="원하는 모델 스타일이나 포즈를 입력하세요"
+        value={prompt}
+        onChange={(e) => setPrompt(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" && !running) {
+            handleCompose();
+          }
+        }}
+        disabled={running}
+        className={`w-full rounded-2xl px-3 py-2 text-xs ${WORKSPACE_CONTROL.input}`}
+      />
 
       <button
         type="button"

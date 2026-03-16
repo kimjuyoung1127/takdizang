@@ -7,6 +7,7 @@ import type { ThemePalette } from "@/types/blocks";
 interface ComposeContextValue {
   projectId: string;
   theme?: ThemePalette;
+  projectStatus: string;
 }
 
 const ComposeContext = createContext<ComposeContextValue | null>(null);
@@ -14,13 +15,15 @@ const ComposeContext = createContext<ComposeContextValue | null>(null);
 export function ComposeProvider({
   projectId,
   theme,
+  projectStatus = "draft",
   children,
 }: {
   projectId: string;
   theme?: ThemePalette;
+  projectStatus?: string;
   children: React.ReactNode;
 }) {
-  const value = useMemo(() => ({ projectId, theme }), [projectId, theme]);
+  const value = useMemo(() => ({ projectId, theme, projectStatus }), [projectId, theme, projectStatus]);
   return (
     <ComposeContext.Provider value={value}>
       {children}

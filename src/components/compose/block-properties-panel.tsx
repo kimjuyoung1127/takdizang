@@ -6,7 +6,7 @@ import { BLOCK_TYPE_LABELS } from "@/lib/constants";
 import { WORKSPACE_CONTROL, WORKSPACE_SURFACE, WORKSPACE_TEXT } from "@/lib/workspace-surface";
 import { useCompose } from "./compose-context";
 import { ImagePicker } from "./image-picker";
-import { ColorStylePicker, ImageFilterControls, SceneComposeAction, ModelComposeAction, RemoveBgAction, FontPicker } from "./shared";
+import { ColorStylePicker, ImageFilterControls, SceneComposeAction, ModelComposeAction, RemoveBgAction, FontPicker, ImageGenerateAction } from "./shared";
 import { BlockTextGenerator } from "./shared/block-text-generator";
 import { Plus, Trash2 } from "lucide-react";
 
@@ -108,6 +108,10 @@ export function BlockPropertiesPanel({ block, onUpdate }: BlockPropertiesPanelPr
             <RemoveBgAction
               projectId={projectId}
               imageUrl={block.imageUrl}
+              onImageChange={(url) => onUpdate(block.id, { imageUrl: url })}
+            />
+            <ImageGenerateAction
+              projectId={projectId}
               onImageChange={(url) => onUpdate(block.id, { imageUrl: url })}
             />
 
@@ -310,6 +314,15 @@ export function BlockPropertiesPanel({ block, onUpdate }: BlockPropertiesPanelPr
                   ...(res.body ? { body: res.body } : {}),
                 });
               }}
+              renderPreview={(r) => {
+                const res = r as { headline?: string; body?: string };
+                return (
+                  <div className="space-y-1">
+                    {res.headline && <p className="font-semibold text-[var(--takdi-text)]">{res.headline}</p>}
+                    {res.body && <p className="text-[var(--takdi-text-muted)]">{res.body}</p>}
+                  </div>
+                );
+              }}
             />
             <Field label="글꼴">
               <FontPicker
@@ -388,6 +401,10 @@ export function BlockPropertiesPanel({ block, onUpdate }: BlockPropertiesPanelPr
               imageUrl={block.imageUrl}
               onImageChange={(url) => onUpdate(block.id, { imageUrl: url })}
             />
+            <ImageGenerateAction
+              projectId={projectId}
+              onImageChange={(url) => onUpdate(block.id, { imageUrl: url })}
+            />
           </div>
         )}
 
@@ -418,6 +435,10 @@ export function BlockPropertiesPanel({ block, onUpdate }: BlockPropertiesPanelPr
             <RemoveBgAction
               projectId={projectId}
               imageUrl={block.imageUrl}
+              onImageChange={(url) => onUpdate(block.id, { imageUrl: url })}
+            />
+            <ImageGenerateAction
+              projectId={projectId}
               onImageChange={(url) => onUpdate(block.id, { imageUrl: url })}
             />
           </div>
@@ -499,6 +520,16 @@ export function BlockPropertiesPanel({ block, onUpdate }: BlockPropertiesPanelPr
                   });
                 }
               }}
+              renderPreview={(r) => {
+                const res = r as { items?: Array<{ title: string; description: string }> };
+                return (
+                  <ul className="space-y-1">
+                    {res.items?.map((item, i) => (
+                      <li key={i}><span className="font-medium">{item.title}</span> — {item.description}</li>
+                    ))}
+                  </ul>
+                );
+              }}
             />
             <Field label="레이아웃">
               <select
@@ -563,6 +594,20 @@ export function BlockPropertiesPanel({ block, onUpdate }: BlockPropertiesPanelPr
                     })),
                   });
                 }
+              }}
+              renderPreview={(r) => {
+                const res = r as { reviews?: Array<{ reviewer: string; rating: number; text: string }> };
+                return (
+                  <ul className="space-y-1.5">
+                    {res.reviews?.map((rev, i) => (
+                      <li key={i}>
+                        <span className="font-medium">{rev.reviewer}</span>{" "}
+                        <span className="text-amber-500">{"★".repeat(rev.rating)}</span>
+                        <p className="text-[var(--takdi-text-muted)]">{rev.text}</p>
+                      </li>
+                    ))}
+                  </ul>
+                );
               }}
             />
             <ColorStylePicker
@@ -662,6 +707,19 @@ export function BlockPropertiesPanel({ block, onUpdate }: BlockPropertiesPanelPr
                   });
                 }
               }}
+              renderPreview={(r) => {
+                const res = r as { items?: Array<{ question: string; answer: string }> };
+                return (
+                  <ul className="space-y-1.5">
+                    {res.items?.map((item, i) => (
+                      <li key={i}>
+                        <p className="font-medium">Q. {item.question}</p>
+                        <p className="text-[var(--takdi-text-muted)]">A. {item.answer}</p>
+                      </li>
+                    ))}
+                  </ul>
+                );
+              }}
             />
             <p className={`text-xs ${WORKSPACE_TEXT.muted}`}>
               질문 {block.items.length}개 (최대 10개) — 아래 블록에서 직접 수정
@@ -699,6 +757,15 @@ export function BlockPropertiesPanel({ block, onUpdate }: BlockPropertiesPanelPr
                   ...(res.text ? { text: res.text } : {}),
                   ...(res.subtext ? { subtext: res.subtext } : {}),
                 });
+              }}
+              renderPreview={(r) => {
+                const res = r as { text?: string; subtext?: string };
+                return (
+                  <div className="space-y-0.5">
+                    {res.text && <p className="font-semibold text-[var(--takdi-text)]">{res.text}</p>}
+                    {res.subtext && <p className="text-[var(--takdi-text-muted)]">{res.subtext}</p>}
+                  </div>
+                );
               }}
             />
             <Field label="배경색">

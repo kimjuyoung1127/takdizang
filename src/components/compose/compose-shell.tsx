@@ -28,7 +28,7 @@ import { saveBlocks, saveComposeTemplate } from "@/lib/api-client";
 import { PLATFORM_WIDTHS, BLOCK_TYPE_LABELS } from "@/lib/constants";
 import { BlockPalette } from "./block-palette";
 import { BlockCanvas } from "./block-canvas";
-import { BlockPropertiesPanel } from "./block-properties-panel";
+import { RightPanel } from "./right-panel";
 import { ComposeToolbar } from "./compose-toolbar";
 import { ComposeProvider } from "./compose-context";
 import { ExportDialog } from "./export-dialog";
@@ -45,6 +45,7 @@ interface ComposeShellProps {
   projectId: string;
   projectName: string;
   initialDoc: BlockDocument;
+  projectStatus?: string;
 }
 
 function formatSavedTime() {
@@ -55,7 +56,7 @@ function hashDoc(doc: BlockDocument) {
   return JSON.stringify(doc);
 }
 
-export function ComposeShell({ projectId, projectName, initialDoc }: ComposeShellProps) {
+export function ComposeShell({ projectId, projectName, initialDoc, projectStatus = "draft" }: ComposeShellProps) {
   const router = useRouter();
   const { messages } = useT();
   const [blocks, setBlocks] = useState<Block[]>(initialDoc.blocks);
@@ -72,6 +73,7 @@ export function ComposeShell({ projectId, projectName, initialDoc }: ComposeShel
   const [leaveOpen, setLeaveOpen] = useState(false);
   const [mobilePreview, setMobilePreview] = useState(false);
   const [draggingLabel, setDraggingLabel] = useState<string | null>(null);
+  const [activeRightTab, setActiveRightTab] = useState<"properties" | "ai-hub">("properties");
   const canvasRef = useRef<HTMLDivElement>(null);
 
   const sensors = useSensors(
@@ -488,7 +490,7 @@ export function ComposeShell({ projectId, projectName, initialDoc }: ComposeShel
   }, [blocks, handleBlocksChange, handleRedo, handleSave, handleUndo, insertIndex, selectedBlockId]);
 
   return (
-    <ComposeProvider projectId={projectId} theme={theme}>
+    <ComposeProvider projectId={projectId} theme={theme} projectStatus={projectStatus}>
       <DndContext
         sensors={sensors}
         collisionDetection={closestCenter}
@@ -536,9 +538,13 @@ export function ComposeShell({ projectId, projectName, initialDoc }: ComposeShel
               onUpdateBlock={handleUpdateBlock}
             />
 
-            <BlockPropertiesPanel
+            <RightPanel
+              activeTab={activeRightTab}
+              onTabChange={setActiveRightTab}
               block={selectedBlock}
               onUpdate={handleUpdateBlock}
+              projectId={projectId}
+              projectStatus={projectStatus}
             />
           </div>
         </div>

@@ -43,7 +43,7 @@ export default async function ComposePage({
 
   const project = await prisma.project.findUnique({
     where: { id },
-    select: { id: true, name: true, content: true },
+    select: { id: true, name: true, content: true, status: true },
   });
 
   if (!project) {
@@ -62,5 +62,5 @@ export default async function ComposePage({
     }
   }
 
-  return <ComposeShell projectId={project.id} projectName={project.name} initialDoc={initialDoc} />;
+  return <ComposeShell projectId={project.id} projectName={project.name} initialDoc={initialDoc} projectStatus={project.status} />;
 }

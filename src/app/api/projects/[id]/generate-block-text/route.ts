@@ -6,6 +6,14 @@ import { jsonOk, jsonError, jsonNotFound } from "@/lib/api-response";
 
 const MODEL = "gemini-2.5-flash";
 
+const TONE_INSTRUCTIONS: Record<string, string> = {
+  formal: "Use a formal, professional tone. Polished and authoritative.",
+  casual: "Use a casual, conversational tone. Relaxed and approachable.",
+  playful: "Use a playful, fun tone. Energetic and creative.",
+  premium: "Use a luxurious, premium tone. Elegant and exclusive.",
+  friendly: "Use a warm, friendly tone. Inviting and personable.",
+};
+
 const BLOCK_PROMPTS: Record<string, string> = {
   "text-block": `Write a product detail section with:
 - headline: attention-grabbing title (max 20 chars)
@@ -118,6 +126,8 @@ export async function POST(
     const body = await request.json().catch(() => ({}));
     const blockType = body.blockType as string;
     const context = body.context as string | undefined;
+    const tone = body.tone as string | undefined;
+    const userPrompt = body.userPrompt as string | undefined;
 
     if (!blockType || !BLOCK_PROMPTS[blockType]) {
       return jsonError(`Unsupported block type: ${blockType}`, 400);
@@ -141,8 +151,12 @@ export async function POST(
     }
 
     const productContext = context || project.briefText || project.name || "일반 상품";
+    const toneInstruction = tone && TONE_INSTRUCTIONS[tone] ? `\nTone: ${TONE_INSTRUCTIONS[tone]}` : "";
+    const userInstruction = userPrompt?.trim() ? `\nAdditional instructions: ${userPrompt.trim()}` : "";
     const prompt = [
       BLOCK_PROMPTS[blockType],
+      toneInstruction,
+      userInstruction,
       "",
       "Product context:",
       productContext,
