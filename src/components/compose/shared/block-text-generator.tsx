@@ -69,17 +69,12 @@ export function BlockTextGenerator({
     handleGenerate();
   }
 
-  function handleQuickGenerate() {
-    if (loading) return;
-    handleGenerate();
-  }
-
-  /* idle state: show button — click triggers immediate generation */
+  /* idle state: show button — click opens settings panel first */
   if (!preview && !loading && !settingsOpen) {
     return (
       <button
         type="button"
-        onClick={handleQuickGenerate}
+        onClick={() => setSettingsOpen(true)}
         className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium transition ${WORKSPACE_CONTROL.accentTint} hover:bg-[rgb(246_223_216_/_0.9)]`}
       >
         <Sparkles className={`h-3.5 w-3.5 ${WORKSPACE_TEXT.accent}`} />
