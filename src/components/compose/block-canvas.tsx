@@ -30,6 +30,9 @@ interface BlockCanvasProps {
   onInsertBlock: (index: number) => void;
   onUpdateBlock: (id: string, patch: Partial<Block>) => void;
   onContextMenu?: (e: React.MouseEvent, blockId: string, blockType: string) => void;
+  pendingBlock?: Block | null;
+  onConfirmPlace?: () => void;
+  onCancelPlace?: () => void;
 }
 
 interface SortableBlockProps {
@@ -216,6 +219,9 @@ export const BlockCanvas = forwardRef<HTMLDivElement, BlockCanvasProps>(function
     onInsertBlock,
     onUpdateBlock,
     onContextMenu,
+    pendingBlock,
+    onConfirmPlace,
+    onCancelPlace,
   },
   ref,
 ) {
@@ -312,7 +318,29 @@ export const BlockCanvas = forwardRef<HTMLDivElement, BlockCanvasProps>(function
           ))}
         </SortableContext>
 
-        {blocks.length === 0 ? (
+        {pendingBlock && (
+          <div className="relative rounded-[28px] border-2 border-dashed border-[#E6B6A9] opacity-60">
+            <BlockDispatch block={pendingBlock} selected={false} onSelect={() => {}} onUpdate={() => {}} readOnly />
+            <div className="absolute bottom-3 right-3 flex gap-2">
+              <button
+                type="button"
+                onClick={onConfirmPlace}
+                className="rounded-lg bg-[#D97C67] px-3 py-1.5 text-xs font-medium text-white hover:bg-[#CF705A] transition-colors"
+              >
+                배치
+              </button>
+              <button
+                type="button"
+                onClick={onCancelPlace}
+                className="rounded-lg border border-[rgb(214_199_184_/_0.55)] bg-white px-3 py-1.5 text-xs font-medium transition-colors hover:bg-gray-50"
+              >
+                취소
+              </button>
+            </div>
+          </div>
+        )}
+
+        {blocks.length === 0 && !pendingBlock ? (
           <div className={`flex h-64 items-center justify-center text-center ${WORKSPACE_TEXT.muted}`}>
             <div>
               <p className="mb-2 text-lg font-medium">아직 블록이 없습니다</p>

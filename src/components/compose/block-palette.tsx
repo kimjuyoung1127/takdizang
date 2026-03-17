@@ -27,6 +27,7 @@ import { WORKSPACE_CONTROL, WORKSPACE_SURFACE, WORKSPACE_TEXT } from "@/lib/work
 
 interface BlockPaletteProps {
   onAddBlock: (block: Block) => void;
+  onPreviewBlock?: (block: Block) => void;
 }
 
 interface BlockTemplate {
@@ -310,7 +311,7 @@ export const BLOCK_TEMPLATES: BlockTemplate[] = [
   },
 ];
 
-function DraggablePaletteItem({ tmpl, onAddBlock }: { tmpl: BlockTemplate; onAddBlock: (block: Block) => void }) {
+function DraggablePaletteItem({ tmpl, onAddBlock, onPreviewBlock }: { tmpl: BlockTemplate; onAddBlock: (block: Block) => void; onPreviewBlock?: (block: Block) => void }) {
   const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
     id: `palette-${tmpl.type}`,
     data: { type: "palette-item", blockType: tmpl.type, create: tmpl.create },
@@ -322,7 +323,7 @@ function DraggablePaletteItem({ tmpl, onAddBlock }: { tmpl: BlockTemplate; onAdd
       ref={setNodeRef}
       {...attributes}
       {...listeners}
-      onClick={() => onAddBlock(tmpl.create())}
+      onClick={() => (onPreviewBlock ?? onAddBlock)(tmpl.create())}
       className={`takdi-panel-strong flex flex-col items-center gap-2 rounded-[1.25rem] p-3 text-center transition-all ${WORKSPACE_CONTROL.ghostButton} hover:-translate-y-0.5 hover:border-[rgb(241_200_190_/_0.92)] hover:bg-[rgb(248_231_226_/_0.9)] hover:text-[var(--takdi-accent-strong)] ${isDragging ? "opacity-40" : ""}`}
       title={tmpl.desc}
     >
@@ -334,7 +335,7 @@ function DraggablePaletteItem({ tmpl, onAddBlock }: { tmpl: BlockTemplate; onAdd
   );
 }
 
-export function BlockPalette({ onAddBlock }: BlockPaletteProps) {
+export function BlockPalette({ onAddBlock, onPreviewBlock }: BlockPaletteProps) {
   return (
     <div className="flex w-64 flex-col border-r border-[rgb(212_196_181_/_0.55)] bg-[rgb(239_231_220_/_0.62)] backdrop-blur-xl">
       <div className="border-b border-[rgb(214_199_184_/_0.62)] px-4 py-4">
@@ -344,7 +345,7 @@ export function BlockPalette({ onAddBlock }: BlockPaletteProps) {
       <div className="flex-1 overflow-y-auto p-3">
         <div className="grid grid-cols-2 gap-2">
           {BLOCK_TEMPLATES.map((tmpl) => (
-            <DraggablePaletteItem key={tmpl.type} tmpl={tmpl} onAddBlock={onAddBlock} />
+            <DraggablePaletteItem key={tmpl.type} tmpl={tmpl} onAddBlock={onAddBlock} onPreviewBlock={onPreviewBlock} />
           ))}
         </div>
       </div>

@@ -80,6 +80,7 @@ export function ComposeShell({ projectId, projectName, initialDoc, projectStatus
   const [aiToolType, setAiToolType] = useState<"video" | "thumbnail" | "script" | null>(null);
   const [bulkGenerateOpen, setBulkGenerateOpen] = useState(false);
   const [contextMenu, setContextMenu] = useState<ContextMenuPosition | null>(null);
+  const [pendingBlock, setPendingBlock] = useState<{ block: Block; insertAt: number } | null>(null);
   const canvasRef = useRef<HTMLDivElement>(null);
 
   const sensors = useSensors(
@@ -437,6 +438,21 @@ export function ComposeShell({ projectId, projectName, initialDoc, projectStatus
     setInsertIndex(null);
   }, [resetHistory]);
 
+  const handlePreviewBlock = useCallback((block: Block) => {
+    setPendingBlock({ block, insertAt: blocks.length });
+  }, [blocks.length]);
+
+  const handleConfirmPlace = useCallback(() => {
+    if (!pendingBlock) return;
+    pushUndo(blocksRef.current);
+    setBlocks(prev => [...prev, pendingBlock.block]);
+    setSelectedBlockId(pendingBlock.block.id);
+    setPendingBlock(null);
+  }, [pendingBlock, pushUndo]);
+
+  const handleCancelPlace = useCallback(() => {
+    setPendingBlock(null);
+  }, []);
 
   const handleDragStart = useCallback((event: DragStartEvent) => {
     const data = event.active.data.current;
@@ -573,7 +589,10 @@ export function ComposeShell({ projectId, projectName, initialDoc, projectStatus
         event.preventDefault();
         handleUndo();
       } else if (event.key === "Escape") {
-        if (insertIndex !== null) {
+        if (pendingBlock) {
+          event.preventDefault();
+          setPendingBlock(null);
+        } else if (insertIndex !== null) {
           event.preventDefault();
           setInsertIndex(null);
         }
@@ -588,7 +607,7 @@ export function ComposeShell({ projectId, projectName, initialDoc, projectStatus
 
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [blocks, handleBlocksChange, handleRedo, handleSave, handleUndo, insertIndex, selectedBlockId]);
+  }, [blocks, handleBlocksChange, handleRedo, handleSave, handleUndo, insertIndex, pendingBlock, selectedBlockId]);
 
   return (
     <ComposeProvider projectId={projectId} theme={theme} projectStatus={projectStatus}>
@@ -627,7 +646,7 @@ export function ComposeShell({ projectId, projectName, initialDoc, projectStatus
           />
 
           <div className="flex flex-1 overflow-hidden">
-            <BlockPalette onAddBlock={handleAddBlock} />
+            <BlockPalette onAddBlock={handleAddBlock} onPreviewBlock={handlePreviewBlock} />
 
             <BlockCanvas
               ref={canvasRef}
@@ -642,6 +661,9 @@ export function ComposeShell({ projectId, projectName, initialDoc, projectStatus
               onInsertBlock={handleInsertBlock}
               onUpdateBlock={handleUpdateBlock}
               onContextMenu={handleContextMenu}
+              pendingBlock={pendingBlock?.block}
+              onConfirmPlace={handleConfirmPlace}
+              onCancelPlace={handleCancelPlace}
             />
 
             <RightPanel
