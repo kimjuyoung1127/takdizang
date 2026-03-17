@@ -1,4 +1,4 @@
-/** AI 생성 패널 — 툴바 아래 슬라이드 다운, 텍스트/이미지 생성 + 결과 드래그 칩 */
+/** AI 생성 탭 — 우측 패널 내 탭으로 표시, 텍스트/이미지 생성 + 결과 드래그 칩 */
 "use client";
 
 import { useState, useCallback } from "react";
@@ -33,9 +33,7 @@ export interface AiGeneratedResult {
   timestamp: number;
 }
 
-interface AiGenerationPanelProps {
-  open: boolean;
-  onClose: () => void;
+interface AiGenerateTabProps {
   projectId: string;
 }
 
@@ -79,7 +77,7 @@ function ResultChip({ result }: { result: AiGeneratedResult }) {
   );
 }
 
-export function AiGenerationPanel({ open, onClose, projectId }: AiGenerationPanelProps) {
+export function AiGenerateTab({ projectId }: AiGenerateTabProps) {
   const [activeTab, setActiveTab] = useState<"text" | "image">("text");
   const [blockType, setBlockType] = useState<string>("text-block");
   const [tone, setTone] = useState<string | null>(null);
@@ -120,49 +118,38 @@ export function AiGenerationPanel({ open, onClose, projectId }: AiGenerationPane
     setResults(prev => prev.filter(r => r.id !== id));
   }, []);
 
-  if (!open) return null;
-
   return (
-    <div className={`border-b border-[rgb(212_196_181_/_0.55)] bg-[rgb(247_241_234_/_0.92)] px-4 py-3 backdrop-blur-xl animate-in slide-in-from-top-2 duration-200`}>
-      <div className="mx-auto max-w-4xl space-y-3">
-        {/* Header */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Sparkles className={`h-4 w-4 ${WORKSPACE_TEXT.accent}`} />
-            <span className={`text-xs font-semibold ${WORKSPACE_TEXT.title}`}>AI 생성</span>
-            <div className="flex rounded-lg border border-[rgb(214_199_184_/_0.55)] bg-white/60">
-              <button
-                type="button"
-                onClick={() => setActiveTab("text")}
-                className={`rounded-md px-3 py-1 text-[11px] font-medium transition-colors ${
-                  activeTab === "text" ? `${WORKSPACE_CONTROL.accentButton}` : `${WORKSPACE_TEXT.muted} hover:text-[#4D433D]`
-                }`}
-              >
-                텍스트
-              </button>
-              <button
-                type="button"
-                onClick={() => setActiveTab("image")}
-                className={`rounded-md px-3 py-1 text-[11px] font-medium transition-colors ${
-                  activeTab === "image" ? `${WORKSPACE_CONTROL.accentButton}` : `${WORKSPACE_TEXT.muted} hover:text-[#4D433D]`
-                }`}
-              >
-                이미지
-              </button>
-            </div>
-          </div>
-          <button type="button" onClick={onClose} className={`${WORKSPACE_TEXT.muted} hover:text-[#4D433D]`}>
-            <X className="h-4 w-4" />
+    <div className="flex flex-1 flex-col overflow-y-auto p-4">
+      <div className="space-y-3">
+        {/* Type toggle */}
+        <div className="flex rounded-lg border border-[rgb(214_199_184_/_0.55)] bg-white/60">
+          <button
+            type="button"
+            onClick={() => setActiveTab("text")}
+            className={`flex-1 rounded-md px-3 py-1.5 text-[11px] font-medium transition-colors ${
+              activeTab === "text" ? `${WORKSPACE_CONTROL.accentButton}` : `${WORKSPACE_TEXT.muted} hover:text-[#4D433D]`
+            }`}
+          >
+            텍스트
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab("image")}
+            className={`flex-1 rounded-md px-3 py-1.5 text-[11px] font-medium transition-colors ${
+              activeTab === "image" ? `${WORKSPACE_CONTROL.accentButton}` : `${WORKSPACE_TEXT.muted} hover:text-[#4D433D]`
+            }`}
+          >
+            이미지
           </button>
         </div>
 
         {/* Controls */}
         {activeTab === "text" && (
-          <div className="flex flex-wrap items-center gap-2">
+          <div className="space-y-2">
             <select
               value={blockType}
               onChange={(e) => setBlockType(e.target.value)}
-              className={`rounded-xl px-2.5 py-1.5 text-xs ${WORKSPACE_CONTROL.input}`}
+              className={`w-full rounded-xl px-2.5 py-1.5 text-xs ${WORKSPACE_CONTROL.input}`}
             >
               {TEXT_BLOCK_TYPES.map((bt) => (
                 <option key={bt} value={bt}>
@@ -171,25 +158,27 @@ export function AiGenerationPanel({ open, onClose, projectId }: AiGenerationPane
               ))}
             </select>
 
-            {TONE_PRESETS.map((t) => (
-              <button
-                key={t.value}
-                type="button"
-                onClick={() => setTone(tone === t.value ? null : t.value)}
-                disabled={loading}
-                className={`rounded-full px-2.5 py-1 text-[10px] font-medium transition-colors ${
-                  tone === t.value
-                    ? WORKSPACE_CONTROL.accentButton
-                    : `${WORKSPACE_CONTROL.subtleButton} shadow-none`
-                }`}
-              >
-                {t.label}
-              </button>
-            ))}
+            <div className="flex flex-wrap gap-1.5">
+              {TONE_PRESETS.map((t) => (
+                <button
+                  key={t.value}
+                  type="button"
+                  onClick={() => setTone(tone === t.value ? null : t.value)}
+                  disabled={loading}
+                  className={`rounded-full px-2.5 py-1 text-[10px] font-medium transition-colors ${
+                    tone === t.value
+                      ? WORKSPACE_CONTROL.accentButton
+                      : `${WORKSPACE_CONTROL.subtleButton} shadow-none`
+                  }`}
+                >
+                  {t.label}
+                </button>
+              ))}
+            </div>
           </div>
         )}
 
-        <div className="flex gap-2">
+        <div className="space-y-2">
           <input
             type="text"
             placeholder={activeTab === "text" ? "원하는 스타일이나 방향을 입력하세요" : "이미지 설명을 입력하세요"}
@@ -197,13 +186,13 @@ export function AiGenerationPanel({ open, onClose, projectId }: AiGenerationPane
             onChange={(e) => setPrompt(e.target.value)}
             onKeyDown={(e) => { if (e.key === "Enter" && !loading) void handleGenerate(); }}
             disabled={loading}
-            className={`flex-1 rounded-xl px-3 py-2 text-xs ${WORKSPACE_CONTROL.input}`}
+            className={`w-full rounded-xl px-3 py-2 text-xs ${WORKSPACE_CONTROL.input}`}
           />
           <button
             type="button"
             onClick={() => void handleGenerate()}
             disabled={loading}
-            className={`flex items-center gap-1.5 rounded-xl px-4 py-2 text-xs font-medium ${WORKSPACE_CONTROL.accentButton} disabled:opacity-50`}
+            className={`flex w-full items-center justify-center gap-1.5 rounded-xl px-4 py-2 text-xs font-medium ${WORKSPACE_CONTROL.accentButton} disabled:opacity-50`}
           >
             {loading ? (
               <>
@@ -224,7 +213,7 @@ export function AiGenerationPanel({ open, onClose, projectId }: AiGenerationPane
           <div className="space-y-1.5">
             <div className="flex items-center justify-between">
               <span className={`text-[10px] font-medium ${WORKSPACE_TEXT.muted}`}>
-                결과 ({results.length}개) — 캔버스 필드로 드래그하여 적용
+                결과 ({results.length}개)
               </span>
               <button
                 type="button"
@@ -234,7 +223,8 @@ export function AiGenerationPanel({ open, onClose, projectId }: AiGenerationPane
                 모두 지우기
               </button>
             </div>
-            <div className="flex flex-wrap gap-2">
+            <p className={`text-[9px] ${WORKSPACE_TEXT.muted}`}>캔버스 필드로 드래그하여 적용</p>
+            <div className="flex flex-col gap-2">
               {results.map((result) => (
                 <div key={result.id} className="group relative">
                   <ResultChip result={result} />

@@ -47,7 +47,7 @@ export function BlockPropertiesPanel({ block, onUpdate }: BlockPropertiesPanelPr
 
   if (!block) {
     return (
-      <div className="flex w-80 flex-col border-l border-[rgb(212_196_181_/_0.55)] bg-[rgb(251_248_244_/_0.72)] text-[var(--takdi-text)] backdrop-blur-xl [&_input:not([type='checkbox']):not([type='color'])]:rounded-2xl [&_input:not([type='checkbox']):not([type='color'])]:border-[rgb(228_217_205_/_0.92)] [&_input:not([type='checkbox']):not([type='color'])]:bg-[rgb(255_255_255_/_0.9)] [&_input:not([type='checkbox']):not([type='color'])]:text-[var(--takdi-text)] [&_input:not([type='checkbox']):not([type='color'])]:outline-none [&_input:not([type='checkbox']):not([type='color'])]:focus:border-[var(--takdi-accent)] [&_select]:rounded-2xl [&_select]:border-[rgb(228_217_205_/_0.92)] [&_select]:bg-[rgb(255_255_255_/_0.9)] [&_select]:text-[var(--takdi-text)] [&_select]:outline-none [&_select]:focus:border-[var(--takdi-accent)]">
+      <div className="flex flex-1 flex-col">
         <div className="border-b border-[rgb(214_199_184_/_0.62)] px-5 py-4">
           <p className="takdi-kicker">Block settings</p>
           <h2 className={`mt-3 text-sm font-semibold tracking-[-0.03em] ${WORKSPACE_TEXT.title}`}>설정</h2>
@@ -63,7 +63,7 @@ export function BlockPropertiesPanel({ block, onUpdate }: BlockPropertiesPanelPr
   }
 
   return (
-    <div className="flex w-80 flex-col border-l border-[rgb(212_196_181_/_0.55)] bg-[rgb(251_248_244_/_0.72)] text-[var(--takdi-text)] backdrop-blur-xl [&_input:not([type='checkbox']):not([type='color'])]:rounded-2xl [&_input:not([type='checkbox']):not([type='color'])]:border-[rgb(228_217_205_/_0.92)] [&_input:not([type='checkbox']):not([type='color'])]:bg-[rgb(255_255_255_/_0.9)] [&_input:not([type='checkbox']):not([type='color'])]:text-[var(--takdi-text)] [&_input:not([type='checkbox']):not([type='color'])]:outline-none [&_input:not([type='checkbox']):not([type='color'])]:focus:border-[var(--takdi-accent)] [&_select]:rounded-2xl [&_select]:border-[rgb(228_217_205_/_0.92)] [&_select]:bg-[rgb(255_255_255_/_0.9)] [&_select]:text-[var(--takdi-text)] [&_select]:outline-none [&_select]:focus:border-[var(--takdi-accent)]">
+    <div className="flex flex-1 flex-col overflow-y-auto">
       <div className="border-b border-[rgb(214_199_184_/_0.62)] px-5 py-4">
         <p className="takdi-kicker">Block settings</p>
         <h2 className={`mt-3 text-sm font-semibold tracking-[-0.03em] ${WORKSPACE_TEXT.title}`}>

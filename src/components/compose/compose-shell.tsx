@@ -38,7 +38,6 @@ import { SaveTemplateDialog } from "./save-template-dialog";
 import { validateBlocks, autoFixAllBlocks } from "@/lib/design-guardrails";
 import { BLOCK_TEMPLATES } from "./block-palette";
 import { AiToolDialog } from "./ai-tool-dialog";
-import { AiGenerationPanel } from "./ai-generation-panel";
 import { DraftGeneratorDialog } from "./draft-generator-dialog";
 import { BlockContextMenu, type ContextMenuPosition } from "./block-context-menu";
 import { generateBlockText } from "@/lib/api-client";
@@ -102,7 +101,6 @@ export function ComposeShell({ projectId, projectName, initialDoc, projectStatus
   const [bulkGenerateOpen, setBulkGenerateOpen] = useState(false);
   const [contextMenu, setContextMenu] = useState<ContextMenuPosition | null>(null);
   const [pendingBlock, setPendingBlock] = useState<{ block: Block; insertAt: number } | null>(null);
-  const [aiPanelOpen, setAiPanelOpen] = useState(false);
   const canvasRef = useRef<HTMLDivElement>(null);
 
   const sensors = useSensors(
@@ -461,14 +459,21 @@ export function ComposeShell({ projectId, projectName, initialDoc, projectStatus
   }, [resetHistory]);
 
   const handlePreviewBlock = useCallback((block: Block) => {
-    setPendingBlock({ block, insertAt: blocks.length });
-  }, [blocks.length]);
+    const targetIndex = insertIndex ?? blocks.length;
+    setPendingBlock({ block, insertAt: targetIndex });
+    setInsertIndex(null);
+  }, [blocks.length, insertIndex]);
 
   const handleConfirmPlace = useCallback(() => {
     if (!pendingBlock) return;
     pushUndo(blocksRef.current);
-    setBlocks(prev => [...prev, pendingBlock.block]);
+    setBlocks(prev => {
+      const next = [...prev];
+      next.splice(pendingBlock.insertAt, 0, pendingBlock.block);
+      return next;
+    });
     setSelectedBlockId(pendingBlock.block.id);
+    setInsertIndex(null);
     setPendingBlock(null);
   }, [pendingBlock, pushUndo]);
 
@@ -684,8 +689,6 @@ export function ComposeShell({ projectId, projectName, initialDoc, projectStatus
             onExport={handleExport}
             onSaveTemplate={handleOpenSaveTemplate}
             onAiGenerate={() => setBriefOpen(true)}
-            onToggleAiPanel={() => setAiPanelOpen(prev => !prev)}
-            aiPanelOpen={aiPanelOpen}
             onDesignCheck={handleDesignCheck}
             onAutoFixAll={handleAutoFixAll}
             onAiVideoRender={() => setAiToolType("video")}
@@ -700,12 +703,6 @@ export function ComposeShell({ projectId, projectName, initialDoc, projectStatus
             lastSaved={lastSaved}
             theme={theme}
             onThemeChange={setTheme}
-          />
-
-          <AiGenerationPanel
-            open={aiPanelOpen}
-            onClose={() => setAiPanelOpen(false)}
-            projectId={projectId}
           />
 
           <div className="flex flex-1 overflow-hidden">
@@ -724,7 +721,7 @@ export function ComposeShell({ projectId, projectName, initialDoc, projectStatus
               onInsertBlock={handleInsertBlock}
               onUpdateBlock={handleUpdateBlock}
               onContextMenu={handleContextMenu}
-              pendingBlock={pendingBlock?.block}
+              pendingBlock={pendingBlock}
               onConfirmPlace={handleConfirmPlace}
               onCancelPlace={handleCancelPlace}
             />
@@ -732,6 +729,7 @@ export function ComposeShell({ projectId, projectName, initialDoc, projectStatus
             <RightPanel
               block={selectedBlock}
               onUpdate={handleUpdateBlock}
+              projectId={projectId}
             />
           </div>
         </div>

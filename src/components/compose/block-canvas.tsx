@@ -30,7 +30,7 @@ interface BlockCanvasProps {
   onInsertBlock: (index: number) => void;
   onUpdateBlock: (id: string, patch: Partial<Block>) => void;
   onContextMenu?: (e: React.MouseEvent, blockId: string, blockType: string) => void;
-  pendingBlock?: Block | null;
+  pendingBlock?: { block: Block; insertAt: number } | null;
   onConfirmPlace?: () => void;
   onCancelPlace?: () => void;
 }
@@ -169,6 +169,30 @@ const MemoSortableBlock = memo(SortableBlock, (prev, next) => {
   );
 });
 
+function GhostBlock({ block, onConfirm, onCancel }: { block: Block; onConfirm?: () => void; onCancel?: () => void }) {
+  return (
+    <div className="relative rounded-[28px] border-2 border-dashed border-[#E6B6A9] opacity-60">
+      <BlockDispatch block={block} selected={false} onSelect={() => {}} onUpdate={() => {}} readOnly />
+      <div className="absolute bottom-3 right-3 flex gap-2">
+        <button
+          type="button"
+          onClick={onConfirm}
+          className="rounded-lg bg-[#D97C67] px-3 py-1.5 text-xs font-medium text-white hover:bg-[#CF705A] transition-colors"
+        >
+          배치
+        </button>
+        <button
+          type="button"
+          onClick={onCancel}
+          className="rounded-lg border border-[rgb(214_199_184_/_0.55)] bg-white px-3 py-1.5 text-xs font-medium transition-colors hover:bg-gray-50"
+        >
+          취소
+        </button>
+      </div>
+    </div>
+  );
+}
+
 function InsertButton({ index, active, onClick }: { index: number; active: boolean; onClick: () => void }) {
   const { isOver, setNodeRef } = useDroppable({ id: `drop-zone-${index}`, data: { type: "drop-zone", index } });
 
@@ -288,6 +312,10 @@ export const BlockCanvas = forwardRef<HTMLDivElement, BlockCanvasProps>(function
 
           {blocks.map((block, index) => (
             <div key={block.id}>
+              {pendingBlock && pendingBlock.insertAt === index && !exporting && (
+                <GhostBlock block={pendingBlock.block} onConfirm={onConfirmPlace} onCancel={onCancelPlace} />
+              )}
+
               {exporting ? (
                 <div className={!block.visible ? "hidden" : ""} data-block-id={block.id} {...(!block.visible ? { "data-hidden": true } : {})}>
                   <BlockDispatch
@@ -318,26 +346,8 @@ export const BlockCanvas = forwardRef<HTMLDivElement, BlockCanvasProps>(function
           ))}
         </SortableContext>
 
-        {pendingBlock && (
-          <div className="relative rounded-[28px] border-2 border-dashed border-[#E6B6A9] opacity-60">
-            <BlockDispatch block={pendingBlock} selected={false} onSelect={() => {}} onUpdate={() => {}} readOnly />
-            <div className="absolute bottom-3 right-3 flex gap-2">
-              <button
-                type="button"
-                onClick={onConfirmPlace}
-                className="rounded-lg bg-[#D97C67] px-3 py-1.5 text-xs font-medium text-white hover:bg-[#CF705A] transition-colors"
-              >
-                배치
-              </button>
-              <button
-                type="button"
-                onClick={onCancelPlace}
-                className="rounded-lg border border-[rgb(214_199_184_/_0.55)] bg-white px-3 py-1.5 text-xs font-medium transition-colors hover:bg-gray-50"
-              >
-                취소
-              </button>
-            </div>
-          </div>
+        {pendingBlock && pendingBlock.insertAt >= blocks.length && !exporting && (
+          <GhostBlock block={pendingBlock.block} onConfirm={onConfirmPlace} onCancel={onCancelPlace} />
         )}
 
         {blocks.length === 0 && !pendingBlock ? (
