@@ -299,13 +299,18 @@ export async function POST(
     const context = body.context as string | undefined;
     const tone = body.tone as string | undefined;
     const userPrompt = body.userPrompt as string | undefined;
+    const rewriteMode = body.rewriteMode as "tone" | "translate" | "shorten" | undefined;
+    const existingText = body.existingText as string | undefined;
 
     if (!blockType || !BLOCK_PROMPTS[blockType]) {
       return jsonError(`Unsupported block type: ${blockType}`, 400);
     }
 
+    const isRewrite = !!(rewriteMode && existingText);
+    const eventType = isRewrite ? "text_rewrite" : "block_text_generate";
+
     const workspaceId = await getWorkspaceId();
-    await checkUsageLimit(workspaceId, "block_text_generate");
+    await checkUsageLimit(workspaceId, eventType);
 
     const project = await prisma.project.findUnique({
       where: { id },
@@ -324,17 +329,36 @@ export async function POST(
       return jsonError("GEMINI_API_KEY not configured", 500);
     }
 
-    const productContext = context || project.briefText || project.name || "일반 상품";
-    const toneInstruction = tone && TONE_INSTRUCTIONS[tone] ? `\nTone: ${TONE_INSTRUCTIONS[tone]}` : "";
-    const userInstruction = userPrompt?.trim() ? `\nAdditional instructions: ${userPrompt.trim()}` : "";
-    const prompt = [
-      BLOCK_PROMPTS[blockType],
-      toneInstruction,
-      userInstruction,
-      "",
-      "Product context:",
-      productContext,
-    ].join("\n");
+    let prompt: string;
+
+    if (isRewrite) {
+      const modeInstructions: Record<string, string> = {
+        tone: `Rewrite the following text with a ${tone ?? "casual"} tone. Keep the same structure and meaning but change the style.\nTone: ${TONE_INSTRUCTIONS[tone ?? "casual"] ?? "Use a casual, conversational tone."}`,
+        translate: "Translate the following text. If it's in Korean, translate to English. If it's in English, translate to Korean. Keep the same structure.",
+        shorten: "Shorten the following text to be more concise while keeping the key message. Aim for 50-70% of the original length.",
+      };
+      const instruction = modeInstructions[rewriteMode!] ?? modeInstructions.tone;
+      prompt = [
+        instruction,
+        "",
+        `Output must match the JSON schema for block type "${blockType}".`,
+        "",
+        "Text to rewrite:",
+        existingText!,
+      ].join("\n");
+    } else {
+      const productContext = context || project.briefText || project.name || "일반 상품";
+      const toneInstruction = tone && TONE_INSTRUCTIONS[tone] ? `\nTone: ${TONE_INSTRUCTIONS[tone]}` : "";
+      const userInstruction = userPrompt?.trim() ? `\nAdditional instructions: ${userPrompt.trim()}` : "";
+      prompt = [
+        BLOCK_PROMPTS[blockType],
+        toneInstruction,
+        userInstruction,
+        "",
+        "Product context:",
+        productContext,
+      ].join("\n");
+    }
 
     const ai = new GoogleGenAI({ apiKey });
     const response = await ai.models.generateContent({
@@ -356,9 +380,9 @@ export async function POST(
     await prisma.usageLedger.create({
       data: {
         workspaceId,
-        eventType: "block_text_generate",
-        detail: { projectId: id, blockType },
-        costEstimate: COST_ESTIMATES.block_text_generate ?? null,
+        eventType,
+        detail: { projectId: id, blockType, ...(isRewrite ? { rewriteMode } : {}) },
+        costEstimate: COST_ESTIMATES[eventType] ?? null,
       },
     });
 

@@ -299,12 +299,68 @@ export function getWorkspaceAssets() {
 
 export function generateBlockText(
   projectId: string,
-  opts: { blockType: string; context?: string; tone?: string; userPrompt?: string },
+  opts: {
+    blockType: string;
+    context?: string;
+    tone?: string;
+    userPrompt?: string;
+    rewriteMode?: "tone" | "translate" | "shorten";
+    existingText?: string;
+  },
 ) {
   return post<{ blockType: string; result: Record<string, unknown> }>(
     `/api/projects/${projectId}/generate-block-text`,
     opts,
   );
+}
+
+// --- Bulk Generate Content (text + images) ---
+
+const POLL_INTERVAL = 2000;
+const POLL_MAX = 120;
+
+async function pollUntilDone(
+  pollFn: () => Promise<JobPollResponse>,
+): Promise<JobPollResponse> {
+  for (let i = 0; i < POLL_MAX; i++) {
+    const res = await pollFn();
+    if (res.job.status === "done") return res;
+    if (res.job.status === "failed") throw new ApiError(500, res.job.error ?? "Job failed");
+    await new Promise((r) => setTimeout(r, POLL_INTERVAL));
+  }
+  throw new ApiError(504, "Job timed out");
+}
+
+export interface BulkGenerateCallbacks {
+  onTextStart?: () => void;
+  onTextDone?: () => void;
+  onImagesStart?: () => void;
+  onImagesDone?: () => void;
+}
+
+export async function bulkGenerateContent(
+  projectId: string,
+  briefText: string,
+  opts?: { category?: string; aspectRatio?: string },
+  callbacks?: BulkGenerateCallbacks,
+): Promise<import("@/types/blocks").BlockDocument> {
+  // 1. Save briefText
+  await updateContent(projectId, { briefText });
+
+  // 2. Generate text
+  callbacks?.onTextStart?.();
+  const { jobId: genJobId } = await startGenerate(projectId, { category: opts?.category });
+  await pollUntilDone(() => pollGenerate(projectId, genJobId));
+  callbacks?.onTextDone?.();
+
+  // 3. Generate images
+  callbacks?.onImagesStart?.();
+  const { jobId: imgJobId } = await startGenerateImages(projectId, { aspectRatio: opts?.aspectRatio ?? "1:1" });
+  await pollUntilDone(() => pollGenerateImages(projectId, imgJobId));
+  callbacks?.onImagesDone?.();
+
+  // 4. Fetch blocks
+  return getBlocks(projectId);
 }
 
 // --- BGM ---
@@ -346,7 +402,7 @@ export interface ExportArtifactRecord {
   id: string;
   type: ExportArtifactType;
   filePath: string;
-  metadata: string | null;
+  metadata: string | object | null;
   createdAt: string;
 }
 
@@ -369,6 +425,10 @@ export function pollGenerateMarketingScript(projectId: string, jobId: string) {
 export function parseArtifactMetadata<T>(artifact: Pick<ExportArtifactRecord, "metadata">): T | null {
   if (!artifact.metadata) {
     return null;
+  }
+
+  if (typeof artifact.metadata !== "string") {
+    return artifact.metadata as T;
   }
 
   try {
