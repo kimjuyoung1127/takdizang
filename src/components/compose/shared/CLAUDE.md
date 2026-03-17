@@ -11,7 +11,7 @@
 - `scene-compose-action.tsx` — AI 배경 합성 액션 (장면 프롬프트 입력 + 비동기 폴링)
 - `model-compose-action.tsx` — AI 모델컷 합성 액션 (에셋 선택 + 스타일/포즈 프롬프트 + 비동기 폴링)
 - `remove-bg-action.tsx` — AI 배경 제거 원클릭 액션 (비동기 폴링)
-- `block-text-generator.tsx` — 블록별 AI 문구 생성 확장 패널 (톤 프리셋 5종 + 자유 프롬프트 + 미리보기/재생성, Gemini API)
+- `block-text-generator.tsx` — **삭제됨** (AI 생성 탭으로 통합, right-panel.tsx의 AiGenerateTab 참조)
 - `image-generate-action.tsx` — AI 이미지 생성 액션 (프롬프트 + 참조 에셋 + 비율 선택 + 비동기 폴링 + 미리보기/적용/재생성)
 - `font-picker.tsx` — 실시간 프리뷰 포함 글꼴 선택 팝오버 (15종 FONT_PRESETS, 카테고리 탭)
 - `index.ts` — barrel export

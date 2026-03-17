@@ -8,7 +8,6 @@ import { WORKSPACE_CONTROL, WORKSPACE_SURFACE, WORKSPACE_TEXT } from "@/lib/work
 import { useCompose } from "./compose-context";
 import { ImagePicker } from "./image-picker";
 import { ColorStylePicker, ImageFilterControls, SceneComposeAction, ModelComposeAction, RemoveBgAction, FontPicker, ImageGenerateAction } from "./shared";
-import { BlockTextGenerator } from "./shared/block-text-generator";
 import { Plus, Trash2 } from "lucide-react";
 
 const OVERLAY_ALIGN_PRESETS = [
@@ -306,25 +305,6 @@ export function BlockPropertiesPanel({ block, onUpdate }: BlockPropertiesPanelPr
         {/* text-block */}
         {block.type === "text-block" && (
           <div className="space-y-3">
-            <BlockTextGenerator
-              blockType="text-block"
-              onResult={(r) => {
-                const res = r as { headline?: string; body?: string };
-                onUpdate(block.id, {
-                  ...(res.headline ? { heading: res.headline } : {}),
-                  ...(res.body ? { body: res.body } : {}),
-                });
-              }}
-              renderPreview={(r) => {
-                const res = r as { headline?: string; body?: string };
-                return (
-                  <div className="space-y-1">
-                    {res.headline && <p className="font-semibold text-[var(--takdi-text)]">{res.headline}</p>}
-                    {res.body && <p className="text-[var(--takdi-text-muted)]">{res.body}</p>}
-                  </div>
-                );
-              }}
-            />
             <Field label="글꼴">
               <FontPicker
                 value={block.fontFamily ?? "default"}
@@ -360,25 +340,6 @@ export function BlockPropertiesPanel({ block, onUpdate }: BlockPropertiesPanelPr
         {/* image-text */}
         {block.type === "image-text" && (
           <div className="space-y-3">
-            <BlockTextGenerator
-              blockType="image-text"
-              onResult={(r) => {
-                const res = r as { heading?: string; body?: string };
-                onUpdate(block.id, {
-                  ...(res.heading ? { heading: res.heading } : {}),
-                  ...(res.body ? { body: res.body } : {}),
-                });
-              }}
-              renderPreview={(r) => {
-                const res = r as { heading?: string; body?: string };
-                return (
-                  <div className="space-y-1">
-                    {res.heading && <p className="font-semibold text-[var(--takdi-text)]">{res.heading}</p>}
-                    {res.body && <p className="text-[var(--takdi-text-muted)]">{res.body}</p>}
-                  </div>
-                );
-              }}
-            />
             <Field label="글꼴">
               <FontPicker
                 value={block.fontFamily ?? "default"}
@@ -467,31 +428,6 @@ export function BlockPropertiesPanel({ block, onUpdate }: BlockPropertiesPanelPr
         {/* image-grid */}
         {block.type === "image-grid" && (
           <div className="space-y-3">
-            <BlockTextGenerator
-              blockType="image-grid"
-              onResult={(r) => {
-                const res = r as { captions?: string[] };
-                if (res.captions) {
-                  onUpdate(block.id, {
-                    images: block.images.map((img, i) => ({
-                      ...img,
-                      caption: res.captions![i] ?? img.caption,
-                    })),
-                  });
-                }
-              }}
-              renderPreview={(r) => {
-                const res = r as { captions?: string[] };
-                return (
-                  <ul className="space-y-0.5">
-                    {res.captions?.map((cap, i) => (
-                      <li key={i} className="text-[var(--takdi-text-muted)]">{i + 1}. {cap}</li>
-                    ))}
-                  </ul>
-                );
-              }}
-              label="캡션 AI 작성"
-            />
             <ImageGenerateAction
               projectId={projectId}
               onImageChange={(url) => {
@@ -568,32 +504,6 @@ export function BlockPropertiesPanel({ block, onUpdate }: BlockPropertiesPanelPr
         {/* selling-point */}
         {block.type === "selling-point" && (
           <div className="space-y-3">
-            <BlockTextGenerator
-              blockType="selling-point"
-              onResult={(r) => {
-                const res = r as { items?: Array<{ title: string; description: string }> };
-                if (res.items) {
-                  onUpdate(block.id, {
-                    items: res.items.slice(0, 4).map((item, i) => ({
-                      ...block.items[i],
-                      icon: block.items[i]?.icon ?? "star",
-                      title: item.title,
-                      description: item.description,
-                    })),
-                  });
-                }
-              }}
-              renderPreview={(r) => {
-                const res = r as { items?: Array<{ title: string; description: string }> };
-                return (
-                  <ul className="space-y-1">
-                    {res.items?.map((item, i) => (
-                      <li key={i}><span className="font-medium">{item.title}</span> — {item.description}</li>
-                    ))}
-                  </ul>
-                );
-              }}
-            />
             <Field label="레이아웃">
               <select
                 value={block.layout ?? "grid"}
@@ -613,27 +523,6 @@ export function BlockPropertiesPanel({ block, onUpdate }: BlockPropertiesPanelPr
         {/* spec-table */}
         {block.type === "spec-table" && (
           <div className="space-y-3">
-            <BlockTextGenerator
-              blockType="spec-table"
-              onResult={(r) => {
-                const res = r as { title?: string; rows?: Array<{ label: string; value: string }> };
-                onUpdate(block.id, {
-                  ...(res.title ? { title: res.title } : {}),
-                  ...(res.rows ? { rows: res.rows } : {}),
-                });
-              }}
-              renderPreview={(r) => {
-                const res = r as { title?: string; rows?: Array<{ label: string; value: string }> };
-                return (
-                  <div className="space-y-1">
-                    {res.title && <p className="font-semibold text-[var(--takdi-text)]">{res.title}</p>}
-                    {res.rows?.map((row, i) => (
-                      <p key={i} className="text-[var(--takdi-text-muted)]">{row.label}: {row.value}</p>
-                    ))}
-                  </div>
-                );
-              }}
-            />
             <p className={`text-xs ${WORKSPACE_TEXT.muted}`}>행 {block.rows.length}개 — 아래 블록에서 직접 수정</p>
           </div>
         )}
@@ -641,26 +530,6 @@ export function BlockPropertiesPanel({ block, onUpdate }: BlockPropertiesPanelPr
         {/* comparison */}
         {block.type === "comparison" && (
           <div className="space-y-3">
-            <BlockTextGenerator
-              blockType="comparison"
-              onResult={(r) => {
-                const res = r as { title?: string; beforeLabel?: string; afterLabel?: string };
-                onUpdate(block.id, {
-                  ...(res.title ? { title: res.title } : {}),
-                  ...(res.beforeLabel ? { before: { ...block.before, label: res.beforeLabel } } : {}),
-                  ...(res.afterLabel ? { after: { ...block.after, label: res.afterLabel } } : {}),
-                });
-              }}
-              renderPreview={(r) => {
-                const res = r as { title?: string; beforeLabel?: string; afterLabel?: string };
-                return (
-                  <div className="space-y-0.5">
-                    {res.title && <p className="font-semibold text-[var(--takdi-text)]">{res.title}</p>}
-                    <p className="text-[var(--takdi-text-muted)]">Before: {res.beforeLabel} / After: {res.afterLabel}</p>
-                  </div>
-                );
-              }}
-            />
             <ImageGenerateAction
               projectId={projectId}
               onImageChange={(url) => onUpdate(block.id, { before: { ...block.before, imageUrl: url } })}
@@ -695,35 +564,6 @@ export function BlockPropertiesPanel({ block, onUpdate }: BlockPropertiesPanelPr
         {/* review */}
         {block.type === "review" && (
           <div className="space-y-3">
-            <BlockTextGenerator
-              blockType="review"
-              onResult={(r) => {
-                const res = r as { reviews?: Array<{ reviewer: string; rating: number; text: string }> };
-                if (res.reviews) {
-                  onUpdate(block.id, {
-                    reviews: res.reviews.map((rev) => ({
-                      author: rev.reviewer,
-                      rating: rev.rating,
-                      text: rev.text,
-                    })),
-                  });
-                }
-              }}
-              renderPreview={(r) => {
-                const res = r as { reviews?: Array<{ reviewer: string; rating: number; text: string }> };
-                return (
-                  <ul className="space-y-1.5">
-                    {res.reviews?.map((rev, i) => (
-                      <li key={i}>
-                        <span className="font-medium">{rev.reviewer}</span>{" "}
-                        <span className="text-amber-500">{"★".repeat(rev.rating)}</span>
-                        <p className="text-[var(--takdi-text-muted)]">{rev.text}</p>
-                      </li>
-                    ))}
-                  </ul>
-                );
-              }}
-            />
             <ColorStylePicker
               label="표시 스타일"
               value={block.displayStyle ?? "card"}
@@ -739,27 +579,6 @@ export function BlockPropertiesPanel({ block, onUpdate }: BlockPropertiesPanelPr
         {/* cta */}
         {block.type === "cta" && (
           <div className="space-y-3">
-            <BlockTextGenerator
-              blockType="cta"
-              onResult={(r) => {
-                const res = r as { text?: string; subtext?: string; buttonLabel?: string };
-                onUpdate(block.id, {
-                  ...(res.text ? { text: res.text } : {}),
-                  ...(res.subtext ? { subtext: res.subtext } : {}),
-                  ...(res.buttonLabel ? { buttonLabel: res.buttonLabel } : {}),
-                });
-              }}
-              renderPreview={(r) => {
-                const res = r as { text?: string; subtext?: string; buttonLabel?: string };
-                return (
-                  <div className="space-y-0.5">
-                    {res.text && <p className="font-semibold text-[var(--takdi-text)]">{res.text}</p>}
-                    {res.subtext && <p className="text-[var(--takdi-text-muted)]">{res.subtext}</p>}
-                    {res.buttonLabel && <p className="text-xs text-[var(--takdi-accent)]">[{res.buttonLabel}]</p>}
-                  </div>
-                );
-              }}
-            />
             <ColorStylePicker
               label="스타일 프리셋"
               value={block.ctaStyle ?? "default"}
@@ -796,33 +615,6 @@ export function BlockPropertiesPanel({ block, onUpdate }: BlockPropertiesPanelPr
         {/* usage-steps */}
         {block.type === "usage-steps" && (
           <div className="space-y-3">
-            <BlockTextGenerator
-              blockType="usage-steps"
-              onResult={(r) => {
-                const res = r as { title?: string; steps?: Array<{ label: string; description: string }> };
-                onUpdate(block.id, {
-                  ...(res.title ? { title: res.title } : {}),
-                  ...(res.steps ? {
-                    steps: res.steps.map((step, i) => ({
-                      imageUrl: block.steps[i]?.imageUrl ?? "",
-                      label: step.label,
-                      description: step.description,
-                    })),
-                  } : {}),
-                });
-              }}
-              renderPreview={(r) => {
-                const res = r as { title?: string; steps?: Array<{ label: string; description: string }> };
-                return (
-                  <div className="space-y-1">
-                    {res.title && <p className="font-semibold text-[var(--takdi-text)]">{res.title}</p>}
-                    {res.steps?.map((step, i) => (
-                      <p key={i} className="text-[var(--takdi-text-muted)]">{i + 1}. {step.label} — {step.description}</p>
-                    ))}
-                  </div>
-                );
-              }}
-            />
             <p className={`text-xs ${WORKSPACE_TEXT.muted}`}>
               단계 {block.steps.length}개 (최대 6개) — 아래 블록에서 직접 수정
             </p>
@@ -855,34 +647,6 @@ export function BlockPropertiesPanel({ block, onUpdate }: BlockPropertiesPanelPr
         {/* faq */}
         {block.type === "faq" && (
           <div className="space-y-3">
-            <BlockTextGenerator
-              blockType="faq"
-              onResult={(r) => {
-                const res = r as { items?: Array<{ question: string; answer: string }> };
-                if (res.items) {
-                  onUpdate(block.id, {
-                    items: res.items.map((item) => ({
-                      id: `faq-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
-                      question: item.question,
-                      answer: item.answer,
-                    })),
-                  });
-                }
-              }}
-              renderPreview={(r) => {
-                const res = r as { items?: Array<{ question: string; answer: string }> };
-                return (
-                  <ul className="space-y-1.5">
-                    {res.items?.map((item, i) => (
-                      <li key={i}>
-                        <p className="font-medium">Q. {item.question}</p>
-                        <p className="text-[var(--takdi-text-muted)]">A. {item.answer}</p>
-                      </li>
-                    ))}
-                  </ul>
-                );
-              }}
-            />
             <p className={`text-xs ${WORKSPACE_TEXT.muted}`}>
               질문 {block.items.length}개 (최대 10개) — 아래 블록에서 직접 수정
             </p>
@@ -892,32 +656,6 @@ export function BlockPropertiesPanel({ block, onUpdate }: BlockPropertiesPanelPr
         {/* notice */}
         {block.type === "notice" && (
           <div className="space-y-3">
-            <BlockTextGenerator
-              blockType="notice"
-              onResult={(r) => {
-                const res = r as { title?: string; items?: Array<{ text: string }> };
-                onUpdate(block.id, {
-                  ...(res.title ? { title: res.title } : {}),
-                  ...(res.items ? {
-                    items: res.items.map((item, i) => ({
-                      icon: block.items[i]?.icon ?? "info",
-                      text: item.text,
-                    })),
-                  } : {}),
-                });
-              }}
-              renderPreview={(r) => {
-                const res = r as { title?: string; items?: Array<{ text: string }> };
-                return (
-                  <div className="space-y-0.5">
-                    {res.title && <p className="font-semibold text-[var(--takdi-text)]">{res.title}</p>}
-                    {res.items?.map((item, i) => (
-                      <p key={i} className="text-[var(--takdi-text-muted)]">• {item.text}</p>
-                    ))}
-                  </div>
-                );
-              }}
-            />
             <Field label="스타일">
               <select
                 value={block.noticeStyle ?? "default"}
@@ -937,25 +675,6 @@ export function BlockPropertiesPanel({ block, onUpdate }: BlockPropertiesPanelPr
         {/* banner-strip */}
         {block.type === "banner-strip" && (
           <div className="space-y-3">
-            <BlockTextGenerator
-              blockType="banner-strip"
-              onResult={(r) => {
-                const res = r as { text?: string; subtext?: string };
-                onUpdate(block.id, {
-                  ...(res.text ? { text: res.text } : {}),
-                  ...(res.subtext ? { subtext: res.subtext } : {}),
-                });
-              }}
-              renderPreview={(r) => {
-                const res = r as { text?: string; subtext?: string };
-                return (
-                  <div className="space-y-0.5">
-                    {res.text && <p className="font-semibold text-[var(--takdi-text)]">{res.text}</p>}
-                    {res.subtext && <p className="text-[var(--takdi-text-muted)]">{res.subtext}</p>}
-                  </div>
-                );
-              }}
-            />
             <Field label="배경색">
               <input
                 type="color"
@@ -978,25 +697,6 @@ export function BlockPropertiesPanel({ block, onUpdate }: BlockPropertiesPanelPr
         {/* price-promo */}
         {block.type === "price-promo" && (
           <div className="space-y-3">
-            <BlockTextGenerator
-              blockType="price-promo"
-              onResult={(r) => {
-                const res = r as { badge?: string; expiresLabel?: string };
-                onUpdate(block.id, {
-                  ...(res.badge ? { badge: res.badge } : {}),
-                  ...(res.expiresLabel ? { expiresLabel: res.expiresLabel } : {}),
-                });
-              }}
-              renderPreview={(r) => {
-                const res = r as { badge?: string; expiresLabel?: string };
-                return (
-                  <div className="space-y-0.5">
-                    {res.badge && <span className="rounded bg-red-100 px-1.5 py-0.5 text-xs font-bold text-red-600">{res.badge}</span>}
-                    {res.expiresLabel && <p className="text-[var(--takdi-text-muted)]">{res.expiresLabel}</p>}
-                  </div>
-                );
-              }}
-            />
             <p className={`text-xs ${WORKSPACE_TEXT.muted}`}>
               할인율 자동 계산 — 아래 블록에서 가격 직접 수정
             </p>
@@ -1006,32 +706,6 @@ export function BlockPropertiesPanel({ block, onUpdate }: BlockPropertiesPanelPr
         {/* trust-badge */}
         {block.type === "trust-badge" && (
           <div className="space-y-3">
-            <BlockTextGenerator
-              blockType="trust-badge"
-              onResult={(r) => {
-                const res = r as { title?: string; badges?: Array<{ label: string }> };
-                onUpdate(block.id, {
-                  ...(res.title ? { title: res.title } : {}),
-                  ...(res.badges ? {
-                    badges: res.badges.map((badge, i) => ({
-                      icon: block.badges[i]?.icon ?? "shield",
-                      label: badge.label,
-                    })),
-                  } : {}),
-                });
-              }}
-              renderPreview={(r) => {
-                const res = r as { title?: string; badges?: Array<{ label: string }> };
-                return (
-                  <div className="space-y-0.5">
-                    {res.title && <p className="font-semibold text-[var(--takdi-text)]">{res.title}</p>}
-                    {res.badges?.map((badge, i) => (
-                      <span key={i} className="mr-1 inline-block rounded-full bg-green-50 px-2 py-0.5 text-xs text-green-700">{badge.label}</span>
-                    ))}
-                  </div>
-                );
-              }}
-            />
             <p className={`text-xs ${WORKSPACE_TEXT.muted}`}>
               뱃지 {block.badges.length}개 (최대 8개) — 아래 블록에서 직접 수정
             </p>

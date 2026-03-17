@@ -9,8 +9,8 @@
 - `block-canvas.tsx` — SortableContext 기반 세로 정렬 캔버스 (DndContext는 compose-shell, insertIndex 삽입 인디케이터, useDroppable 드롭존, 가드레일+자동수정, lockLayout, 모바일 375px 프리뷰)
 - `block-dispatch.tsx` — 편집/미리보기 공용 블록 타입 디스패처 (`readOnly` 지원)
 - `block-surface-frame.tsx` — 편집/결과/내보내기 공용 표면 래퍼 (platform width + mobile shell + theme CSS 변수)
-- `block-properties-panel.tsx` — 우측 블록 타입별 동적 설정 패널 (16종 블록에 BlockTextGenerator 통합, ImagePicker + FontPicker + ColorStylePicker + ImageGenerateAction, 오버레이 편집기)
-- `right-panel.tsx` — 우측 패널 래퍼 (속성 패널 직접 렌더링, AI 허브 탭 제거됨)
+- `block-properties-panel.tsx` — 우측 블록 타입별 동적 설정 패널 (ImagePicker + FontPicker + ColorStylePicker + ImageGenerateAction, 오버레이 편집기)
+- `right-panel.tsx` — 우측 탭 패널 (속성 + AI 생성 탭, AiGenerateTab 통합)
 - `ai-tool-dialog.tsx` — AI 도구 모달 (영상 렌더링·썸네일·마케팅 스크립트, 툴바 드롭다운에서 호출)
 - `image-picker.tsx` — 이미지 선택/교체 팝오버 (파일 업로드 + URL 입력)
 - `text-overlay-editor.tsx` — 텍스트 오버레이 편집기 (드래그 위치, 글꼴, 크기, 색상, 굵기) — 레거시, hero-block에 직접 구현으로 대체
