@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { getWorkspaceId, ensureWorkspaceScope } from "@/lib/workspace-guard";
+import { checkUsageLimit, UsageLimitError } from "@/lib/usage-guard";
 import { jsonOk, jsonError, jsonNotFound } from "@/lib/api-response";
 import type { GenerationResult } from "@/types";
 import type { BlockDocument } from "@/types/blocks";
@@ -25,7 +26,8 @@ export async function POST(
   const body = await request.json().catch(() => ({}));
 
   try {
-    const workspaceId = getWorkspaceId();
+    const workspaceId = await getWorkspaceId();
+    await checkUsageLimit(workspaceId, "generation_start");
 
     const project = await prisma.project.findUnique({
       where: { id },
@@ -34,14 +36,13 @@ export async function POST(
           status: true,
           briefText: true,
           mode: true,
-          editorMode: true,
           content: true,
         },
       });
     if (!project) return jsonNotFound("Project");
 
     try {
-      ensureWorkspaceScope(project.workspaceId);
+      await ensureWorkspaceScope(project.workspaceId);
     } catch {
       return jsonError("Forbidden: workspace scope violation", 403);
     }
@@ -63,10 +64,10 @@ export async function POST(
           projectId: id,
           status: "queued",
           provider: body.provider ?? "gemini",
-          input: JSON.stringify({
+          input: {
             briefText: project.briefText,
             mode: project.mode,
-          }),
+          },
         },
       });
 
@@ -74,7 +75,7 @@ export async function POST(
         data: {
           workspaceId,
           eventType: "generation_start",
-          detail: JSON.stringify({ projectId: id, jobId: newJob.id }),
+          detail: { projectId: id, jobId: newJob.id },
         },
       });
 
@@ -85,7 +86,6 @@ export async function POST(
     processGeneration(job.id, id, project.briefText ?? "", {
       apiKey: body.apiKey,
       mode: project.mode ?? "freeform",
-      editorMode: project.editorMode ?? "flow",
       category: body.category,
       existingContent: project.content,
     }).catch((err) => {
@@ -94,6 +94,9 @@ export async function POST(
 
     return jsonOk({ jobId: job.id, status: "queued" }, 202);
   } catch (error) {
+    if (error instanceof UsageLimitError) {
+      return jsonError(error.message, 429);
+    }
     console.error("POST /api/projects/[id]/generate error:", error);
     return jsonError("Internal server error", 500);
   }
@@ -127,7 +130,7 @@ export async function GET(
     if (!project) return jsonNotFound("Project");
 
     try {
-      ensureWorkspaceScope(project.workspaceId);
+      await ensureWorkspaceScope(project.workspaceId);
     } catch {
       return jsonError("Forbidden: workspace scope violation", 403);
     }
@@ -175,7 +178,7 @@ async function processGeneration(
   jobId: string,
   projectId: string,
   briefText: string,
-  options: { apiKey?: string; mode: string; editorMode?: string; category?: string; existingContent?: string | null }
+  options: { apiKey?: string; mode: string; category?: string; existingContent?: string | null }
 ) {
   try {
     // job → running
@@ -211,15 +214,15 @@ async function processGeneration(
     }
 
     // If compose mode, convert sections to blocks
-    let contentToSave: string;
-    if (options.editorMode === "compose") {
+    let contentToSave: unknown;
+    if (options.mode === "compose") {
       const blockDoc: BlockDocument = {
         format: "blocks",
         blocks: sectionsToBlocks(generationOutput.sections, options.category),
         platform: { width: 780, name: "coupang" },
         version: 1,
       };
-      contentToSave = JSON.stringify(blockDoc);
+      contentToSave = blockDoc;
     } else {
       const savedGraph = parseEditorGraph(options.existingContent);
       const nextShortform = upsertShortformSections(
@@ -232,7 +235,7 @@ async function processGeneration(
             edges: savedGraph.edges,
             shortform: nextShortform,
           })
-        : JSON.stringify({
+        : ({
             sections: generationOutput.sections,
             shortform: nextShortform,
           });
@@ -251,7 +254,7 @@ async function processGeneration(
         where: { id: jobId },
         data: {
           status: "done",
-          output: JSON.stringify(generationOutput),
+          output: generationOutput,
           doneAt: new Date(),
         },
       }),
