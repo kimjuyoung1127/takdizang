@@ -1,13 +1,12 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { ArrowDown, ArrowUp, ImageIcon, LayoutGrid, Music, Sparkles } from "lucide-react";
+import { ArrowDown, ArrowUp, ImageIcon, LayoutGrid, Music } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AppImage } from "@/components/ui/app-image";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { AssetUpload } from "./asset-upload";
-import type { EditorViewMode } from "@/lib/editor-surface";
-import { getStepPresentation, getUserFacingNodeStatus } from "@/lib/editor-surface";
+import { getUserFacingNodeStatus } from "@/lib/editor-surface";
 import { NODE_TYPE_LABELS, PRODUCT_CATEGORIES } from "@/lib/constants";
 import { getProjectAssets, type AssetRecord } from "@/lib/api-client";
 import { WORKSPACE_CONTROL, WORKSPACE_SURFACE, WORKSPACE_TEXT } from "@/lib/workspace-surface";
@@ -25,7 +24,6 @@ interface UploadedAsset {
 
 interface PropertiesPanelProps {
   mode: string;
-  viewMode: EditorViewMode;
   selectedNodeId?: string | null;
   selectedNodeData?: NodeData | null;
   onNodeDataChange?: (nodeId: string, patch: Partial<NodeData>) => void;
@@ -73,7 +71,6 @@ function sortCuts(state: ShortformProjectState) {
 
 export function PropertiesPanel({
   mode,
-  viewMode,
   selectedNodeId,
   selectedNodeData,
   onNodeDataChange,
@@ -136,14 +133,11 @@ export function PropertiesPanel({
   }, [mode, onNodeDataChange, onShortformStateChange, refreshAssets, selectedNodeData?.nodeType, selectedNodeId]);
 
   const selectedNodeType = selectedNodeData?.nodeType;
-  const stepPresentation = selectedNodeType ? getStepPresentation(mode, selectedNodeType) : null;
   const statusInfo = getUserFacingNodeStatus(selectedNodeData ?? { label: "", nodeType: "prompt", status: "draft" });
   const title =
-    stepPresentation?.title ??
     selectedNodeData?.label ??
     (selectedNodeType ? NODE_TYPE_LABELS[selectedNodeType as keyof typeof NODE_TYPE_LABELS] : undefined) ??
     "작업 단계";
-  const description = stepPresentation?.description ?? "현재 단계의 입력과 상태를 확인합니다.";
   const previewImages = Array.isArray(selectedNodeData?.previewImages)
     ? selectedNodeData.previewImages.filter((value): value is string => typeof value === "string")
     : [];
@@ -188,7 +182,7 @@ export function PropertiesPanel({
         <div className="flex items-start justify-between gap-3">
           <div>
             <p className={`text-sm font-semibold ${WORKSPACE_TEXT.title}`}>{title}</p>
-            <p className={`mt-2 text-sm leading-6 ${WORKSPACE_TEXT.body}`}>{description}</p>
+            <p className={`mt-2 text-sm leading-6 ${WORKSPACE_TEXT.body}`}>현재 단계의 입력과 상태를 확인합니다.</p>
           </div>
           <StatusBadge status={selectedNodeData.status ?? "draft"} label={statusInfo.label} tone={statusInfo.tone} />
         </div>
@@ -398,14 +392,14 @@ export function PropertiesPanel({
     <aside className={`flex w-[24rem] flex-col border-l border-[rgb(212_196_181_/_0.55)] ${WORKSPACE_SURFACE.panelMuted} backdrop-blur-xl`}>
       <div className="border-b border-[rgb(214_199_184_/_0.62)] px-6 py-5">
         <div className={`flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] ${WORKSPACE_TEXT.muted}`}>
-          {viewMode === "simple" ? <Sparkles className="h-3.5 w-3.5" /> : <LayoutGrid className="h-3.5 w-3.5" />}
-          {viewMode === "simple" ? "현재 단계" : "단계 설정"}
+          <LayoutGrid className="h-3.5 w-3.5" />
+          단계 설정
         </div>
         <h2 className={`mt-3 text-lg font-semibold ${WORKSPACE_TEXT.title}`}>{title}</h2>
         <p className={`mt-1 text-sm ${WORKSPACE_TEXT.body}`}>{projectName ?? "프로젝트"}</p>
       </div>
       <div className="flex-1 overflow-y-auto px-6 py-5">
-        {viewMode === "simple" ? settingsBody : (
+        {(
           <Tabs defaultValue="settings" className="flex-1">
             <TabsList className="grid w-full grid-cols-2 rounded-2xl border border-[rgb(214_199_184_/_0.82)] bg-[rgb(248_241_232_/_0.82)] p-1">
               <TabsTrigger value="settings" className="gap-2 rounded-2xl text-xs data-[state=active]:border-[rgb(241_200_190_/_0.95)] data-[state=active]:bg-[rgb(248_231_226_/_0.96)] data-[state=active]:text-[var(--takdi-accent-strong)]"><LayoutGrid className="h-3.5 w-3.5" />작업 내용</TabsTrigger>

@@ -3,13 +3,12 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import type { Edge, Node } from "@xyflow/react";
-import { AlertTriangle, Home, LayoutPanelTop, Loader2, RefreshCcw } from "lucide-react";
+import { AlertTriangle, Home, LayoutPanelTop, RefreshCcw } from "lucide-react";
 import { toast } from "sonner";
 import { FloatingToolbar } from "./floating-toolbar";
 import { NodeCanvas, type NodeCanvasHandle, type NodeData } from "./node-canvas";
 import { NodePalette } from "./node-palette";
 import { PropertiesPanel } from "./properties-panel";
-import { StepEditorWorkspace } from "./step-editor-workspace";
 import { Button } from "@/components/ui/button";
 import { MODE_NODE_CONFIG } from "@/lib/constants";
 import {
@@ -24,10 +23,7 @@ import {
 } from "@/lib/editor-graph";
 import {
   getModeSurfaceConfig,
-  getSimpleModeSteps,
-  getViewModeStorageKey,
   isGuidedMode,
-  type EditorViewMode,
 } from "@/lib/editor-surface";
 import {
   applyShortformRenderArtifacts,
@@ -132,9 +128,7 @@ export function NodeEditorShell({
   initialGraph,
   initialShortformState,
 }: NodeEditorShellProps) {
-  const surfaceConfig = getModeSurfaceConfig(mode);
   const guidedMode = isGuidedMode(mode);
-  const allowSimpleMode = surfaceConfig.allowSimpleMode;
 
   const [name, setName] = useState(projectName);
   const [editingName, setEditingName] = useState(false);
@@ -145,7 +139,6 @@ export function NodeEditorShell({
   const [exporting, setExporting] = useState(false);
   const [lastSaved, setLastSaved] = useState<string | null>(null);
   const [projectBriefText, setProjectBriefText] = useState(initialBriefText);
-  const [viewMode, setViewMode] = useState<EditorViewMode>(surfaceConfig.defaultViewMode);
   const [canvasSnapshot, setCanvasSnapshot] = useState<CanvasSnapshot>(initialGraph ?? EMPTY_SNAPSHOT);
   const [shortformState, setShortformState] = useState<ShortformProjectState | null>(initialShortformState ?? null);
 
@@ -156,12 +149,11 @@ export function NodeEditorShell({
   const autoSaveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const mountedShortformRef = useRef(false);
 
-  const effectiveViewMode: EditorViewMode = allowSimpleMode ? viewMode : "expert";
   const graphValidation = useMemo(
     () => validateEditorGraph(mode, canvasSnapshot.nodes, canvasSnapshot.edges),
     [canvasSnapshot.edges, canvasSnapshot.nodes, mode],
   );
-  const guidedReadOnlyStructure = guidedMode && effectiveViewMode === "expert";
+  const guidedReadOnlyStructure = guidedMode;
   const invalidGuidedGraph = guidedMode && !graphValidation.valid;
   const repairStepLabels = (graphValidation.repairedSnapshot?.nodes ?? []).map(
     (node) => ((node.data as NodeData).label ?? ""),
@@ -574,46 +566,6 @@ export function NodeEditorShell({
   }, [mode, syncProjectState]);
 
   useEffect(() => {
-    if (typeof window === "undefined") {
-      return;
-    }
-
-    if (!allowSimpleMode) {
-      setViewMode("expert");
-      return;
-    }
-
-    const savedViewMode = window.localStorage.getItem(getViewModeStorageKey(mode));
-    if (savedViewMode === "simple" || savedViewMode === "expert") {
-      setViewMode(savedViewMode);
-      return;
-    }
-
-    setViewMode(surfaceConfig.defaultViewMode);
-  }, [allowSimpleMode, mode, surfaceConfig.defaultViewMode]);
-
-  useEffect(() => {
-    if (!allowSimpleMode || effectiveViewMode !== "simple" || invalidGuidedGraph) {
-      return;
-    }
-
-    const stepTypes = getSimpleModeSteps(mode).map((step) => step.nodeType);
-    const currentNodeExists = selectedNodeId
-      ? canvasSnapshot.nodes.some((node) => node.id === selectedNodeId)
-      : false;
-    if (currentNodeExists) {
-      return;
-    }
-
-    const firstStepNode = canvasSnapshot.nodes.find((node) =>
-      stepTypes.includes((node.data as NodeData).nodeType as (typeof stepTypes)[number]),
-    );
-    if (firstStepNode) {
-      setSelectedNodeId(firstStepNode.id);
-    }
-  }, [allowSimpleMode, canvasSnapshot.nodes, effectiveViewMode, invalidGuidedGraph, mode, selectedNodeId]);
-
-  useEffect(() => {
     return () => {
       if (autoSaveTimer.current) {
         clearTimeout(autoSaveTimer.current);
@@ -644,29 +596,16 @@ export function NodeEditorShell({
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [handleRunAll, handleSave, handleStop, pipelineStep]);
 
-  const handleViewModeChange = useCallback((nextMode: EditorViewMode) => {
-    if (!allowSimpleMode) {
-      return;
-    }
-    setViewMode(nextMode);
-    if (typeof window !== "undefined") {
-      window.localStorage.setItem(getViewModeStorageKey(mode), nextMode);
-    }
-  }, [allowSimpleMode, mode]);
-
   const handleRestrictionViolation = useCallback((message: string) => {
     toast.error(message);
   }, []);
 
   const isRunning = pipelineStep === "running" || pipelineStep === "generating" || pipelineStep === "imaging";
-  const hiddenCanvasClassName = effectiveViewMode === "simple"
-    ? "pointer-events-none absolute inset-0 opacity-0"
-    : "h-full w-full";
   const issueMessages = graphValidation.issues.map((issue) => issue.message);
 
   return (
     <div className={`flex h-screen ${WORKSPACE_SURFACE.page}`}>
-      {effectiveViewMode === "expert" ? <NodePalette mode={mode} disabled={guidedReadOnlyStructure} /> : null}
+      <NodePalette mode={mode} disabled={guidedReadOnlyStructure} />
 
       <div className="relative flex-1">
         <div className="absolute left-4 top-6 z-20">
@@ -721,41 +660,12 @@ export function NodeEditorShell({
           </div>
         </div>
 
-        {allowSimpleMode ? (
-          <div className="absolute right-4 top-6 z-20">
-            <div className={`flex items-center rounded-full p-1 ${WORKSPACE_SURFACE.floating}`}>
-              <button
-                type="button"
-                onClick={() => handleViewModeChange("simple")}
-                className={`rounded-full px-3 py-1.5 text-xs font-medium transition ${
-                  effectiveViewMode === "simple"
-                    ? WORKSPACE_CONTROL.accentButton
-                    : `${WORKSPACE_TEXT.body} hover:bg-[rgb(248_241_232_/_0.88)]`
-                }`}
-              >
-                간단 모드
-              </button>
-              <button
-                type="button"
-                onClick={() => handleViewModeChange("expert")}
-                className={`rounded-full px-3 py-1.5 text-xs font-medium transition ${
-                  effectiveViewMode === "expert"
-                    ? WORKSPACE_CONTROL.accentButton
-                    : `${WORKSPACE_TEXT.body} hover:bg-[rgb(248_241_232_/_0.88)]`
-                }`}
-              >
-                구조 보기
-              </button>
-            </div>
-          </div>
-        ) : null}
-
         <FloatingToolbar
           mode={mode}
           ratio={globalRatio}
           helperText={
             guidedReadOnlyStructure && !invalidGuidedGraph
-              ? "내부 구조 보기 모드입니다.\n이 모드는 단계당 1개만 사용됩니다."
+              ? "가이드형 모드입니다.\n이 모드는 단계당 1개만 사용됩니다."
               : null
           }
           onRatioChange={setGlobalRatio}
@@ -778,7 +688,7 @@ export function NodeEditorShell({
           ref={canvasRef}
           mode={mode}
           initialSnapshot={initialGraph ?? undefined}
-          className={hiddenCanvasClassName}
+          className="h-full w-full"
           readOnlyStructure={guidedReadOnlyStructure || invalidGuidedGraph}
           canInsertNodes={!guidedReadOnlyStructure && !guidedMode}
           canDuplicateNodes={!guidedReadOnlyStructure && !guidedMode}
@@ -795,31 +705,11 @@ export function NodeEditorShell({
             repairStepLabels={repairStepLabels}
             onRepair={handleRecoverGraph}
           />
-        ) : effectiveViewMode === "simple" ? (
-          <div className="h-full px-6 pb-6 pt-28">
-            {canvasSnapshot.nodes.length > 0 ? (
-              <StepEditorWorkspace
-                mode={mode}
-                nodes={canvasSnapshot.nodes}
-                selectedNodeId={selectedNodeId}
-                onSelectStep={handleNodeSelect}
-                shortformState={shortformState}
-              />
-            ) : (
-              <div className={`flex h-full items-center justify-center rounded-[32px] ${WORKSPACE_SURFACE.panelStrong}`}>
-                <div className={`flex items-center gap-3 text-sm ${WORKSPACE_TEXT.body}`}>
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                  작업 단계를 불러오는 중입니다.
-                </div>
-              </div>
-            )}
-          </div>
         ) : null}
       </div>
 
       <PropertiesPanel
         mode={mode}
-        viewMode={effectiveViewMode}
         selectedNodeId={invalidGuidedGraph ? null : selectedNodeId}
         selectedNodeData={invalidGuidedGraph ? null : selectedNodeData}
         onNodeDataChange={handleNodeDataChange}
