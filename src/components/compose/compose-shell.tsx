@@ -61,6 +61,26 @@ function hashDoc(doc: BlockDocument) {
   return JSON.stringify(doc);
 }
 
+function extractAiFieldValue(
+  data: Record<string, unknown>,
+  fieldName: string,
+  type: string,
+): unknown {
+  if (type === "text") {
+    const mapping: Record<string, string> = {
+      heading: "headline",
+      body: "body",
+      text: "text",
+      subtext: "subtext",
+      buttonLabel: "buttonLabel",
+    };
+    return data[mapping[fieldName] ?? fieldName];
+  }
+  if (type === "image") {
+    return data.imageUrl ?? data.url;
+  }
+}
+
 export function ComposeShell({ projectId, projectName, initialDoc, projectStatus = "draft" }: ComposeShellProps) {
   const router = useRouter();
   const { messages } = useT();
@@ -511,6 +531,35 @@ export function ComposeShell({ projectId, projectName, initialDoc, projectStatus
 
       setSelectedBlockId(newBlock.id);
       setInsertIndex(null);
+      return;
+    }
+
+    // AI 결과 칩 → 개별 필드 드롭
+    if (activeData?.type === "ai-result") {
+      const overData = over.data.current;
+      if (overData?.type === "ai-field-drop") {
+        const { blockId, fieldName, acceptTypes } = overData as {
+          blockId: string; fieldName: string; acceptTypes: string[];
+        };
+        const { resultType, data } = activeData as {
+          resultType: string; data: Record<string, unknown>;
+        };
+
+        if (!acceptTypes.includes(resultType)) {
+          toast.error(
+            resultType === "text"
+              ? "텍스트 결과는 이미지 필드에 적용할 수 없어요"
+              : "이미지 결과는 텍스트 필드에 적용할 수 없어요",
+          );
+          return;
+        }
+
+        const value = extractAiFieldValue(data, fieldName, resultType);
+        if (value !== undefined) {
+          handleUpdateBlock(blockId, { [fieldName]: value });
+          toast.success("AI 결과가 적용되었어요");
+        }
+      }
       return;
     }
 

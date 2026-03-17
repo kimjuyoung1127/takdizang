@@ -4,6 +4,7 @@
 import type { CtaBlock } from "@/types/blocks";
 import { WORKSPACE_SURFACE } from "@/lib/workspace-surface";
 import { EditableText } from "../shared";
+import { AiDropField } from "../shared/ai-drop-field";
 
 interface Props {
   block: CtaBlock;
@@ -56,22 +57,28 @@ export function CtaBlockRenderer({ block, selected, onSelect, onUpdate, readOnly
       onClick={onSelect}
     >
       <div className={`py-8 text-center ${customBg ? "" : config.bg}`} style={customBg}>
-        <EditableText
-          value={block.text}
-          placeholder="지금 바로 시작하세요"
-          onChange={(v) => onUpdate({ text: v })}
-          className={`mb-2 text-xl font-bold ${config.text}`}
-          tag="h3"
-          readOnly={readOnly}
-        />
-        <EditableText
-          value={block.subtext}
-          placeholder="보조 문구"
-          onChange={(v) => onUpdate({ subtext: v })}
-          className={`mb-4 text-sm ${config.sub}`}
-          tag="p"
-          readOnly={readOnly}
-        />
+        <AiDropField blockId={block.id} fieldName="text" acceptTypes={["text"]}
+          onApply={(v) => onUpdate({ text: v })}>
+          <EditableText
+            value={block.text}
+            placeholder="지금 바로 시작하세요"
+            onChange={(v) => onUpdate({ text: v })}
+            className={`mb-2 text-xl font-bold ${config.text}`}
+            tag="h3"
+            readOnly={readOnly}
+          />
+        </AiDropField>
+        <AiDropField blockId={block.id} fieldName="subtext" acceptTypes={["text"]}
+          onApply={(v) => onUpdate({ subtext: v })}>
+          <EditableText
+            value={block.subtext}
+            placeholder="보조 문구"
+            onChange={(v) => onUpdate({ subtext: v })}
+            className={`mb-4 text-sm ${config.sub}`}
+            tag="p"
+            readOnly={readOnly}
+          />
+        </AiDropField>
         <button
           type="button"
           className={`rounded-full px-8 py-3 text-sm font-semibold ${customBtnColor ? "" : config.btn}`}

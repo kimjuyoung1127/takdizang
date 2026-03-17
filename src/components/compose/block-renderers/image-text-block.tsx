@@ -5,6 +5,7 @@ import type { ImageTextBlock as ImageTextBlockType } from "@/types/blocks";
 import { getFontFamily } from "@/lib/constants";
 import { WORKSPACE_SURFACE, WORKSPACE_TEXT } from "@/lib/workspace-surface";
 import { ImageUploadZone, EditableText, buildFilterStyle } from "../shared";
+import { AiDropField } from "../shared/ai-drop-field";
 
 interface Props {
   block: ImageTextBlockType;
@@ -26,14 +27,19 @@ export function ImageTextBlockRenderer({ block, selected, onSelect, onUpdate, re
       )}
     </div>
   ) : (
-    <div className="w-1/2 overflow-hidden rounded-[24px]">
-      <ImageUploadZone
-        imageUrl={block.imageUrl}
-        onImageChange={(url) => onUpdate({ imageUrl: url })}
-        className="aspect-square"
-        placeholderText="이미지 업로드"
-        imageFilter={buildFilterStyle(block.imageFilters)}
-      />
+    <div className="w-1/2">
+      <AiDropField blockId={block.id} fieldName="imageUrl" acceptTypes={["image"]}
+        onApply={(url) => onUpdate({ imageUrl: url })}>
+        <div className="overflow-hidden rounded-[24px]">
+          <ImageUploadZone
+            imageUrl={block.imageUrl}
+            onImageChange={(url) => onUpdate({ imageUrl: url })}
+            className="aspect-square"
+            placeholderText="이미지 업로드"
+            imageFilter={buildFilterStyle(block.imageFilters)}
+          />
+        </div>
+      </AiDropField>
     </div>
   );
 
@@ -41,22 +47,28 @@ export function ImageTextBlockRenderer({ block, selected, onSelect, onUpdate, re
 
   const textSide = (
     <div className="flex w-1/2 flex-col justify-center p-4" style={{ fontFamily: fontStyle }}>
-      <EditableText
-        value={block.heading}
-        placeholder="제목을 입력하세요"
-        onChange={(v) => onUpdate({ heading: v })}
-        className={`mb-2 text-lg font-bold ${WORKSPACE_TEXT.title}`}
-        tag="h3"
-        readOnly={readOnly}
-      />
-      <EditableText
-        value={block.body}
-        placeholder="설명을 입력하세요"
-        onChange={(v) => onUpdate({ body: v })}
-        className={`text-sm leading-relaxed ${WORKSPACE_TEXT.body}`}
-        tag="p"
-        readOnly={readOnly}
-      />
+      <AiDropField blockId={block.id} fieldName="heading" acceptTypes={["text"]}
+        onApply={(v) => onUpdate({ heading: v })}>
+        <EditableText
+          value={block.heading}
+          placeholder="제목을 입력하세요"
+          onChange={(v) => onUpdate({ heading: v })}
+          className={`mb-2 text-lg font-bold ${WORKSPACE_TEXT.title}`}
+          tag="h3"
+          readOnly={readOnly}
+        />
+      </AiDropField>
+      <AiDropField blockId={block.id} fieldName="body" acceptTypes={["text"]}
+        onApply={(v) => onUpdate({ body: v })}>
+        <EditableText
+          value={block.body}
+          placeholder="설명을 입력하세요"
+          onChange={(v) => onUpdate({ body: v })}
+          className={`text-sm leading-relaxed ${WORKSPACE_TEXT.body}`}
+          tag="p"
+          readOnly={readOnly}
+        />
+      </AiDropField>
     </div>
   );
 

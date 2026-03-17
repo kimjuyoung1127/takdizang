@@ -4,6 +4,7 @@
 import type { BannerStripBlock } from "@/types/blocks";
 import { WORKSPACE_SURFACE } from "@/lib/workspace-surface";
 import { EditableText } from "../shared";
+import { AiDropField } from "../shared/ai-drop-field";
 
 interface Props {
   block: BannerStripBlock;
@@ -30,25 +31,31 @@ export function BannerStripBlockRenderer({ block, selected, onSelect, onUpdate, 
         className="px-6 py-4 text-center"
         style={{ backgroundColor: bgColor, color: textColor }}
       >
-        <EditableText
-          value={block.text}
-          placeholder="무료배송 | 오늘만 특가"
-          onChange={(v) => onUpdate({ text: v })}
-          className="text-base font-bold"
-          style={{ color: textColor }}
-          tag="p"
-          readOnly={readOnly}
-        />
-        {(block.subtext || !readOnly) && (
+        <AiDropField blockId={block.id} fieldName="text" acceptTypes={["text"]}
+          onApply={(v) => onUpdate({ text: v })}>
           <EditableText
-            value={block.subtext ?? ""}
-            placeholder="보조 문구를 입력하세요"
-            onChange={(v) => onUpdate({ subtext: v })}
-            className="mt-1 text-xs opacity-80"
+            value={block.text}
+            placeholder="무료배송 | 오늘만 특가"
+            onChange={(v) => onUpdate({ text: v })}
+            className="text-base font-bold"
             style={{ color: textColor }}
             tag="p"
             readOnly={readOnly}
           />
+        </AiDropField>
+        {(block.subtext || !readOnly) && (
+          <AiDropField blockId={block.id} fieldName="subtext" acceptTypes={["text"]}
+            onApply={(v) => onUpdate({ subtext: v })}>
+            <EditableText
+              value={block.subtext ?? ""}
+              placeholder="보조 문구를 입력하세요"
+              onChange={(v) => onUpdate({ subtext: v })}
+              className="mt-1 text-xs opacity-80"
+              style={{ color: textColor }}
+              tag="p"
+              readOnly={readOnly}
+            />
+          </AiDropField>
         )}
       </div>
     </div>

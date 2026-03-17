@@ -5,6 +5,7 @@ import type { TextBlockBlock } from "@/types/blocks";
 import { getFontFamily } from "@/lib/constants";
 import { WORKSPACE_SURFACE, WORKSPACE_TEXT } from "@/lib/workspace-surface";
 import { EditableText } from "../shared";
+import { AiDropField } from "../shared/ai-drop-field";
 
 interface Props {
   block: TextBlockBlock;
@@ -35,22 +36,28 @@ export function TextBlockRenderer({ block, selected, onSelect, onUpdate, readOnl
       onClick={onSelect}
       style={{ textAlign: block.align, fontFamily: fontStyle }}
     >
-      <EditableText
-        value={block.heading}
-        placeholder="제목을 입력하세요"
-        onChange={(v) => onUpdate({ heading: v })}
-        className={`mb-3 text-xl font-bold ${WORKSPACE_TEXT.title}`}
-        tag="h2"
-        readOnly={readOnly}
-      />
-      <EditableText
-        value={block.body}
-        placeholder="본문을 입력하세요"
-        onChange={(v) => onUpdate({ body: v })}
-        className={`whitespace-pre-wrap ${bodySizeClass} leading-relaxed ${WORKSPACE_TEXT.body}`}
-        tag="p"
-        readOnly={readOnly}
-      />
+      <AiDropField blockId={block.id} fieldName="heading" acceptTypes={["text"]}
+        onApply={(v) => onUpdate({ heading: v })}>
+        <EditableText
+          value={block.heading}
+          placeholder="제목을 입력하세요"
+          onChange={(v) => onUpdate({ heading: v })}
+          className={`mb-3 text-xl font-bold ${WORKSPACE_TEXT.title}`}
+          tag="h2"
+          readOnly={readOnly}
+        />
+      </AiDropField>
+      <AiDropField blockId={block.id} fieldName="body" acceptTypes={["text"]}
+        onApply={(v) => onUpdate({ body: v })}>
+        <EditableText
+          value={block.body}
+          placeholder="본문을 입력하세요"
+          onChange={(v) => onUpdate({ body: v })}
+          className={`whitespace-pre-wrap ${bodySizeClass} leading-relaxed ${WORKSPACE_TEXT.body}`}
+          tag="p"
+          readOnly={readOnly}
+        />
+      </AiDropField>
     </div>
   );
 }

@@ -6,6 +6,7 @@ import type { HeroBlock as HeroBlockType } from "@/types/blocks";
 import { getFontFamily } from "@/lib/constants";
 import { WORKSPACE_SURFACE } from "@/lib/workspace-surface";
 import { ImageUploadZone, EditableText, buildFilterStyle } from "../shared";
+import { AiDropField } from "../shared/ai-drop-field";
 
 interface Props {
   block: HeroBlockType;
@@ -106,13 +107,16 @@ export function HeroBlockRenderer({ block, selected, onSelect, onUpdate, readOnl
           </div>
         )
       ) : (
-        <ImageUploadZone
-          imageUrl={block.imageUrl}
-          onImageChange={(url) => onUpdate({ imageUrl: url })}
-          className="min-h-[300px]"
-          placeholderText="히어로 이미지를 업로드하세요"
-          imageFilter={buildFilterStyle(block.imageFilters)}
-        />
+        <AiDropField blockId={block.id} fieldName="imageUrl" acceptTypes={["image"]}
+          onApply={(url) => onUpdate({ imageUrl: url })}>
+          <ImageUploadZone
+            imageUrl={block.imageUrl}
+            onImageChange={(url) => onUpdate({ imageUrl: url })}
+            className="min-h-[300px]"
+            placeholderText="히어로 이미지를 업로드하세요"
+            imageFilter={buildFilterStyle(block.imageFilters)}
+          />
+        </AiDropField>
       )}
 
       {/* Text overlays — draggable (click text to edit, drag non-text area to move) */}
