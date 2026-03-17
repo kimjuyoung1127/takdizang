@@ -6,7 +6,7 @@ import { Sparkles, SlidersHorizontal } from "lucide-react";
 import type { Block } from "@/types/blocks";
 import { BlockPropertiesPanel } from "./block-properties-panel";
 import { AiGenerateTab } from "./ai-generation-panel";
-import { WORKSPACE_CONTROL, WORKSPACE_SURFACE, WORKSPACE_TEXT } from "@/lib/workspace-surface";
+import { WORKSPACE_TEXT } from "@/lib/workspace-surface";
 
 interface RightPanelProps {
   block: Block | null;
