@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import type { Edge, Node } from "@xyflow/react";
-import { AlertTriangle, Home, LayoutPanelTop, RefreshCcw } from "lucide-react";
+import { AlertTriangle, Home, LayoutPanelTop, Plus, RefreshCcw, SlidersHorizontal } from "lucide-react";
 import { toast } from "sonner";
 import { useT } from "@/i18n/use-t";
 import { FloatingToolbar } from "./floating-toolbar";
@@ -11,6 +11,7 @@ import { NodeCanvas, type NodeCanvasHandle, type NodeData } from "./node-canvas"
 import { NodePalette } from "./node-palette";
 import { PropertiesPanel } from "./properties-panel";
 import { Button } from "@/components/ui/button";
+import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 import { MODE_NODE_CONFIG } from "@/lib/constants";
 import {
   pollExport,
@@ -135,6 +136,8 @@ export function NodeEditorShell({
   const [name, setName] = useState(projectName);
   const [editingName, setEditingName] = useState(false);
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
+  const [mobilePaletteOpen, setMobilePaletteOpen] = useState(false);
+  const [mobilePropsOpen, setMobilePropsOpen] = useState(false);
   const [pipelineStep, setPipelineStep] = useState<PipelineStep>("idle");
   const [globalRatio, setGlobalRatio] = useState("9:16");
   const [saving, setSaving] = useState(false);
@@ -607,7 +610,10 @@ export function NodeEditorShell({
 
   return (
     <div className={`flex h-screen ${WORKSPACE_SURFACE.page}`}>
-      <NodePalette mode={mode} disabled={guidedReadOnlyStructure} />
+      {/* Desktop palette */}
+      <div className="hidden md:block">
+        <NodePalette mode={mode} disabled={guidedReadOnlyStructure} />
+      </div>
 
       <div className="relative flex-1">
         <div className="absolute left-4 top-6 z-20">
@@ -710,20 +716,74 @@ export function NodeEditorShell({
         ) : null}
       </div>
 
-      <PropertiesPanel
-        mode={mode}
-        selectedNodeId={invalidGuidedGraph ? null : selectedNodeId}
-        selectedNodeData={invalidGuidedGraph ? null : selectedNodeData}
-        onNodeDataChange={handleNodeDataChange}
-        projectId={projectId}
-        projectName={name}
-        nodeCount={canvasSnapshot.nodes.length}
-        projectBriefText={projectBriefText}
-        onProjectBriefTextChange={setProjectBriefTextWithRef}
-        allowBgm={(MODE_NODE_CONFIG[mode] ?? MODE_NODE_CONFIG.freeform).allowedNodes.includes("bgm")}
-        shortformState={shortformState}
-        onShortformStateChange={handleShortformStateChange}
-      />
+      {/* Desktop properties */}
+      <div className="hidden md:block">
+        <PropertiesPanel
+          mode={mode}
+          selectedNodeId={invalidGuidedGraph ? null : selectedNodeId}
+          selectedNodeData={invalidGuidedGraph ? null : selectedNodeData}
+          onNodeDataChange={handleNodeDataChange}
+          projectId={projectId}
+          projectName={name}
+          nodeCount={canvasSnapshot.nodes.length}
+          projectBriefText={projectBriefText}
+          onProjectBriefTextChange={setProjectBriefTextWithRef}
+          allowBgm={(MODE_NODE_CONFIG[mode] ?? MODE_NODE_CONFIG.freeform).allowedNodes.includes("bgm")}
+          shortformState={shortformState}
+          onShortformStateChange={handleShortformStateChange}
+        />
+      </div>
+
+      {/* Mobile FABs */}
+      <div className="fixed bottom-6 right-4 z-40 flex flex-col gap-3 md:hidden">
+        {!guidedReadOnlyStructure && (
+          <button
+            type="button"
+            onClick={() => setMobilePaletteOpen(true)}
+            className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--takdi-accent)] text-white shadow-[0_8px_24px_rgba(217,124,103,0.35)]"
+            aria-label="노드 추가"
+          >
+            <Plus className="h-5 w-5" />
+          </button>
+        )}
+        <button
+          type="button"
+          onClick={() => setMobilePropsOpen(true)}
+          className="flex h-12 w-12 items-center justify-center rounded-full border border-[rgb(214_199_184_/_0.65)] bg-white text-[var(--takdi-text)] shadow-[0_8px_24px_rgba(80,54,34,0.12)]"
+          aria-label="속성 패널"
+        >
+          <SlidersHorizontal className="h-5 w-5" />
+        </button>
+      </div>
+
+      {/* Mobile palette Sheet */}
+      <Sheet open={mobilePaletteOpen} onOpenChange={setMobilePaletteOpen}>
+        <SheetContent side="left" showCloseButton={false} className="w-72 p-0">
+          <SheetTitle className="sr-only">노드 팔레트</SheetTitle>
+          <NodePalette mode={mode} disabled={guidedReadOnlyStructure} />
+        </SheetContent>
+      </Sheet>
+
+      {/* Mobile properties Sheet */}
+      <Sheet open={mobilePropsOpen} onOpenChange={setMobilePropsOpen}>
+        <SheetContent side="right" showCloseButton={false} className="w-[24rem] max-w-[85vw] p-0">
+          <SheetTitle className="sr-only">노드 속성</SheetTitle>
+          <PropertiesPanel
+            mode={mode}
+            selectedNodeId={invalidGuidedGraph ? null : selectedNodeId}
+            selectedNodeData={invalidGuidedGraph ? null : selectedNodeData}
+            onNodeDataChange={handleNodeDataChange}
+            projectId={projectId}
+            projectName={name}
+            nodeCount={canvasSnapshot.nodes.length}
+            projectBriefText={projectBriefText}
+            onProjectBriefTextChange={setProjectBriefTextWithRef}
+            allowBgm={(MODE_NODE_CONFIG[mode] ?? MODE_NODE_CONFIG.freeform).allowedNodes.includes("bgm")}
+            shortformState={shortformState}
+            onShortformStateChange={handleShortformStateChange}
+          />
+        </SheetContent>
+      </Sheet>
     </div>
   );
 }

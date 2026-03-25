@@ -77,6 +77,7 @@ Status enum: `Not Started | In Progress | Done | Blocked | Deferred`
 | MOBILE-001 | 모바일 네비게이션 (Sheet + 햄버거 메뉴) | Done | claude | shadcn Sheet + MobileNavSheet, md 미만 햄버거 메뉴 |
 | MOBILE-002 | 일반 페이지 반응형 폴리싱 | Done | claude | viewport export, overflow-x clip, min-w 수정, 툴바 모바일 축소 |
 | MOBILE-003 | Compose 모바일 레이아웃 | Done | claude | 3패널 → Sheet overlay + FAB (palette left, properties right) |
+| MOBILE-004 | Editor 모바일 레이아웃 | Done | claude | 3패널 → Sheet overlay + FAB, fitView 자동 적용 |
 | DEPLOY-001 | Vercel 배포 | Done | jason | https://takdizang.vercel.app (USE_MOCK=true) |
 | DEPLOY-002 | Supabase Auth URL 설정 | Not Started | jason | Site URL + Redirect URLs 설정 필요 |
 | DEPLOY-003 | Supabase migration 적용 | Not Started | jason | 5개 SQL 파일 순서대로 실행 |

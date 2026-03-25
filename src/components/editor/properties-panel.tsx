@@ -48,7 +48,7 @@ const CONTROL_PILL =
 
 function EmptyPanel({ projectName, nodeCount }: { projectName?: string; nodeCount?: number }) {
   return (
-    <aside className={`flex w-[24rem] flex-col border-l border-[rgb(212_196_181_/_0.55)] ${WORKSPACE_SURFACE.panelMuted} backdrop-blur-xl`}>
+    <aside className={`flex h-full w-full flex-col border-l md:w-[24rem] border-[rgb(212_196_181_/_0.55)] ${WORKSPACE_SURFACE.panelMuted} backdrop-blur-xl`}>
       <div className="flex flex-1 flex-col items-center justify-center gap-4 px-6 py-10">
         <div className="takdi-overlay-icon flex h-14 w-14 items-center justify-center rounded-3xl">
           <LayoutGrid className="h-7 w-7" />
@@ -389,7 +389,7 @@ export function PropertiesPanel({
   );
 
   return (
-    <aside className={`flex w-[24rem] flex-col border-l border-[rgb(212_196_181_/_0.55)] ${WORKSPACE_SURFACE.panelMuted} backdrop-blur-xl`}>
+    <aside className={`flex h-full w-full flex-col border-l md:w-[24rem] border-[rgb(212_196_181_/_0.55)] ${WORKSPACE_SURFACE.panelMuted} backdrop-blur-xl`}>
       <div className="border-b border-[rgb(214_199_184_/_0.62)] px-6 py-5">
         <div className={`flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] ${WORKSPACE_TEXT.muted}`}>
           <LayoutGrid className="h-3.5 w-3.5" />

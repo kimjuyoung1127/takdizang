@@ -61,7 +61,7 @@ export function NodePalette({ mode, disabled = false }: NodePaletteProps) {
   }
 
   return (
-    <aside className="flex w-72 flex-col border-r border-[rgb(212_196_181_/_0.55)] bg-[rgb(239_231_220_/_0.62)] backdrop-blur-xl">
+    <aside className="flex h-full w-full flex-col border-r border-[rgb(212_196_181_/_0.55)] bg-[rgb(239_231_220_/_0.62)] backdrop-blur-xl md:w-72">
       <div className="border-b border-[rgb(214_199_184_/_0.62)] px-5 py-5">
         <p className="takdi-kicker">Pipeline blocks</p>
         <h2 className={`mt-3 text-lg font-semibold tracking-[-0.03em] ${WORKSPACE_TEXT.title}`}>작업 단계</h2>
