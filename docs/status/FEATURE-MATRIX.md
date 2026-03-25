@@ -81,6 +81,7 @@ Status enum: `Not Started | In Progress | Done | Blocked | Deferred`
 | MOBILE-005 | 모바일 반응형 문서 + 테스트 검증 | Done | claude | 9파일 181테스트 통과, 빌드 성공, 문서 정합성 |
 | MOBILE-006 | Compose/Editor 툴바 정리 + 데스크탑 유도 배너 | Done | claude | 모바일 저장/미리보기/내보내기만, 편집 도구 hidden md:flex |
 | MOBILE-007 | DnD 터치 비활성화 + 읽기 모드 강화 | Done | claude | PointerSensor 모바일 비활성화, GripVertical 숨김, Editor readOnly |
+| MOBILE-008 | 모바일 읽기 모드 문서화 | Done | claude | 전략 문서화: 읽기 + 확인 수준, 편집은 데스크탑 유도 |
 | DEPLOY-001 | Vercel 배포 | Done | jason | https://takdizang.vercel.app (USE_MOCK=true) |
 | DEPLOY-002 | Supabase Auth URL 설정 | Not Started | jason | Site URL + Redirect URLs 설정 필요 |
 | DEPLOY-003 | Supabase migration 적용 | Not Started | jason | 5개 SQL 파일 순서대로 실행 |

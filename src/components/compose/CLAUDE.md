@@ -26,11 +26,14 @@
 - `block-renderers/` — 13종 블록 렌더러 (개별 파일)
 - `shared/` — 공용 재사용 컴포넌트 (EditableText, ImageUploadZone, VideoUploadZone, ColorStylePicker, FontPicker, AssetGrid 등)
 
-## Mobile
+## Mobile (읽기 모드 + 데스크탑 유도)
+- **전략**: 모바일은 읽기 + 확인 수준, 편집은 데스크탑 유도
 - md(768px) 미만: BlockPalette/RightPanel → Sheet overlay, FAB 버튼으로 접근
-- Canvas: 모바일 전체 화면
-- 블록 선택 시 모바일에서 자동으로 속성 Sheet 열기
-- 데스크탑(md+): 기존 3패널 레이아웃 유지
+- Canvas: 모바일 전체 화면, 블록 선택 시 자동 속성 Sheet 열기
+- DnD 비활성화: `PointerSensor distance 9999` (모바일), GripVertical/삭제 버튼 `hidden md:flex`
+- 데스크탑 유도 배너: "블록 편집은 데스크탑에서 더 편리해요" (md:hidden)
+- 툴바: 모바일 저장/미리보기/내보내기만, 편집 도구 `hidden md:flex`
+- 데스크탑(md+): 기존 3패널 레이아웃 변경 없음
 
 ## DnD Architecture
 - `DndContext`는 **compose-shell.tsx**에서 관리 (팔레트+캔버스 통합)

@@ -12,10 +12,13 @@
 - `bottom-logger.tsx` — 하단 접힘/펼침 작업 기록 패널
 - `asset-upload.tsx` — BYOI 이미지/BGM 파일 업로드 컴포넌트
 
-## Mobile
+## Mobile (읽기 모드 + 데스크탑 유도)
+- **전략**: 모바일은 파이프라인 확인 + 실행 수준, 노드 편집은 데스크탑 유도
 - md(768px) 미만: NodePalette/PropertiesPanel → Sheet overlay, FAB 버튼으로 접근
 - Canvas: 모바일 전체 화면 + fitView 자동 적용
-- 데스크탑(md+): 기존 3패널 레이아웃 유지
+- `readOnlyStructure=true` (모바일): 노드 드래그/연결/삭제 비활성화
+- 데스크탑 유도 배너: "노드 편집은 데스크탑에서 더 편리해요" (md:hidden)
+- 데스크탑(md+): 기존 3패널 레이아웃 변경 없음
 
 ## Convention
 - 모든 파일 `"use client"` (React Flow + 인터랙션)

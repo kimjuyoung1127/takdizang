@@ -5,11 +5,12 @@ Last Updated: 2026-03-25 (KST, 모바일 반응형 개선 완료)
 ## Latest Update
 
 ### 모바일 반응형 개선 (2026-03-25)
-- **Phase 1 — Sheet + 모바일 네비게이션**: shadcn Sheet 컴포넌트, MobileNavSheet (md 미만 햄버거 메뉴 → 좌측 Sheet 드로어)
-- **Phase 2 — 일반 페이지 폴리싱**: viewport export, overflow-x clip, ModeCard min-w 수정, ComposeToolbar 모바일 축소
-- **Phase 3 — Compose 모바일 레이아웃**: 3패널 → Sheet overlay + FAB (블록 추가/속성 편집), 블록 선택 시 자동 Sheet 열기
-- **Phase 4 — Editor 모바일 레이아웃**: 3패널 → Sheet overlay + FAB, React Flow fitView 자동 적용
-- **전략**: 데스크탑 레이아웃 변경 없음, md(768px) 미만에서 패널을 Sheet overlay로 전환
+- **전략**: 모바일은 **읽기 + 확인** 수준, 편집은 **데스크탑 유도**
+- **Sheet + 모바일 네비게이션**: shadcn Sheet, MobileNavSheet (햄버거 메뉴 → 좌측 드로어)
+- **일반 페이지 폴리싱**: viewport export, overflow-x clip, min-w 수정
+- **Compose/Editor 모바일**: 3패널 → Sheet overlay + FAB, 데스크탑 유도 배너
+- **읽기 모드**: DnD 터치 비활성화, 블록 드래그핸들 숨김, Editor readOnly
+- **툴바 정리**: 모바일 저장/미리보기/내보내기만, 편집 도구 데스크탑 전용
 
 ### 설정 페이지 프로덕션 업그레이드 (2026-03-25)
 - **개발자 정보 제거**: 시스템 정보(Next.js/Supabase 버전), 저장소 정보(DB URL, 업로드 경로) 완전 제거

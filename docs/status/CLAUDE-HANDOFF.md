@@ -33,12 +33,13 @@ Branch: `main`
 ## Recent Changes (2026-03-25, 모바일 반응형 개선)
 
 ### 모바일 반응형 5-Phase 완료
-- **Phase 1**: shadcn Sheet + MobileNavSheet (md 미만 햄버거 메뉴 → 좌측 드로어)
-- **Phase 2**: viewport export, overflow-x clip, ModeCard min-w 수정, ComposeToolbar 모바일 축소
-- **Phase 3**: Compose 3패널 → BlockPalette/RightPanel Sheet overlay + FAB, 블록 선택 시 자동 Sheet 열기
-- **Phase 4**: Editor 3패널 → NodePalette/PropertiesPanel Sheet overlay + FAB, fitView 자동
-- **핵심 파일**: `mobile-nav-sheet.tsx`, `sheet.tsx`, compose-shell, node-editor-shell, block-palette, right-panel, node-palette, properties-panel
-- **전략**: md(768px) breakpoint 기준, 데스크탑 변경 없음
+- **전략**: 모바일 = 읽기 + 확인, 편집 = 데스크탑 유도
+- Sheet + MobileNavSheet (햄버거 메뉴 → 좌측 드로어)
+- Compose/Editor 3패널 → Sheet overlay + FAB
+- 데스크탑 유도 배너 ("데스크탑에서 더 편리해요")
+- DnD 터치 비활성화 (PointerSensor distance 9999)
+- Editor 모바일 readOnly (노드 드래그/연결 비활성화)
+- 툴바: 모바일 저장/미리보기/내보내기만, 편집 도구 hidden md:flex
 
 ## Previous Changes (2026-03-25, UX 텍스트 리라이팅 + i18n)
 
