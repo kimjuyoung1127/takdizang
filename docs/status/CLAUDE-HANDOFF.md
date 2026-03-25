@@ -1,9 +1,10 @@
 # Claude Handoff
 
-Last Updated: 2026-03-25 (KST, UX 텍스트 리라이팅 + i18n 구조 확장)
+Last Updated: 2026-03-25 (KST, 모바일 반응형 개선 완료)
 Branch: `main`
 
 ## Current Snapshot
+- **모바일 반응형 완료**: shadcn Sheet 기반 모바일 네비게이션 + Compose/Editor 3패널 → Sheet overlay + FAB, 데스크탑 변경 없음
 - **설정 페이지 프로덕션 업그레이드**: 개발자 정보 제거, 4개 탭 (내 계정/사용량/워크스페이스/AI 프로바이더), Settings API 4개, 공유 컴포넌트 표준화
 - **UX 텍스트 프로덕션 리라이팅**: 41파일 해요체 통일, 친절한 안내 문구, word-break: keep-all 한글 줄바꿈
 - **i18n 구조 확장**: MessageSchema + ko.ts + useT() hook, editor/aiTools/exportDialog/composeToasts 섹션 추가
@@ -29,7 +30,17 @@ Branch: `main`
 - 파이프라인: prompt → generate-images → bgm → cuts → render → export
 - 저장: `PATCH /api/projects/[id]/content` → EditorGraph (nodes/edges/shortform)
 
-## Recent Changes (2026-03-25, UX 텍스트 리라이팅 + i18n)
+## Recent Changes (2026-03-25, 모바일 반응형 개선)
+
+### 모바일 반응형 5-Phase 완료
+- **Phase 1**: shadcn Sheet + MobileNavSheet (md 미만 햄버거 메뉴 → 좌측 드로어)
+- **Phase 2**: viewport export, overflow-x clip, ModeCard min-w 수정, ComposeToolbar 모바일 축소
+- **Phase 3**: Compose 3패널 → BlockPalette/RightPanel Sheet overlay + FAB, 블록 선택 시 자동 Sheet 열기
+- **Phase 4**: Editor 3패널 → NodePalette/PropertiesPanel Sheet overlay + FAB, fitView 자동
+- **핵심 파일**: `mobile-nav-sheet.tsx`, `sheet.tsx`, compose-shell, node-editor-shell, block-palette, right-panel, node-palette, properties-panel
+- **전략**: md(768px) breakpoint 기준, 데스크탑 변경 없음
+
+## Previous Changes (2026-03-25, UX 텍스트 리라이팅 + i18n)
 
 ### UX 텍스트 프로덕션 리라이팅
 - 41파일 해요체 통일 (합니다체 → 해요체), 개발 용어 → 사용자 친화 용어

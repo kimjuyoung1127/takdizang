@@ -12,6 +12,11 @@
 - `bottom-logger.tsx` — 하단 접힘/펼침 작업 기록 패널
 - `asset-upload.tsx` — BYOI 이미지/BGM 파일 업로드 컴포넌트
 
+## Mobile
+- md(768px) 미만: NodePalette/PropertiesPanel → Sheet overlay, FAB 버튼으로 접근
+- Canvas: 모바일 전체 화면 + fitView 자동 적용
+- 데스크탑(md+): 기존 3패널 레이아웃 유지
+
 ## Convention
 - 모든 파일 `"use client"` (React Flow + 인터랙션)
 - 모든 UI 라벨 한글 (Korean-first)

@@ -1,13 +1,15 @@
 # Takdizang Project Status
 
-Last Updated: 2026-03-25 (KST, 모바일 반응형 개선 진행 중)
+Last Updated: 2026-03-25 (KST, 모바일 반응형 개선 완료)
 
 ## Latest Update
 
-### 모바일 반응형 개선 Phase 1 (2026-03-25)
-- **shadcn Sheet 컴포넌트 추가**: 모바일 드로어 기반 UI 패턴
-- **모바일 네비게이션**: MobileNavSheet (md 미만 햄버거 메뉴 → 좌측 Sheet 드로어)
-- **AppHeader 반응형**: CTA 버튼 모바일 아이콘 전용, MobileNavSheet 통합
+### 모바일 반응형 개선 (2026-03-25)
+- **Phase 1 — Sheet + 모바일 네비게이션**: shadcn Sheet 컴포넌트, MobileNavSheet (md 미만 햄버거 메뉴 → 좌측 Sheet 드로어)
+- **Phase 2 — 일반 페이지 폴리싱**: viewport export, overflow-x clip, ModeCard min-w 수정, ComposeToolbar 모바일 축소
+- **Phase 3 — Compose 모바일 레이아웃**: 3패널 → Sheet overlay + FAB (블록 추가/속성 편집), 블록 선택 시 자동 Sheet 열기
+- **Phase 4 — Editor 모바일 레이아웃**: 3패널 → Sheet overlay + FAB, React Flow fitView 자동 적용
+- **전략**: 데스크탑 레이아웃 변경 없음, md(768px) 미만에서 패널을 Sheet overlay로 전환
 
 ### 설정 페이지 프로덕션 업그레이드 (2026-03-25)
 - **개발자 정보 제거**: 시스템 정보(Next.js/Supabase 버전), 저장소 정보(DB URL, 업로드 경로) 완전 제거

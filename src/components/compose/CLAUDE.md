@@ -26,6 +26,12 @@
 - `block-renderers/` — 13종 블록 렌더러 (개별 파일)
 - `shared/` — 공용 재사용 컴포넌트 (EditableText, ImageUploadZone, VideoUploadZone, ColorStylePicker, FontPicker, AssetGrid 등)
 
+## Mobile
+- md(768px) 미만: BlockPalette/RightPanel → Sheet overlay, FAB 버튼으로 접근
+- Canvas: 모바일 전체 화면
+- 블록 선택 시 모바일에서 자동으로 속성 Sheet 열기
+- 데스크탑(md+): 기존 3패널 레이아웃 유지
+
 ## DnD Architecture
 - `DndContext`는 **compose-shell.tsx**에서 관리 (팔레트+캔버스 통합)
 - `block-palette.tsx`: 각 아이템에 `useDraggable` (id: `palette-{type}`, data: palette-item)
