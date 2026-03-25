@@ -68,7 +68,7 @@ Status enum: `Not Started | In Progress | Done | Blocked | Deferred`
 | UX-001 | UX 텍스트 프로덕션 리라이팅 | Done | claude | 41파일 해요체 통일, 개발 용어→사용자 친화 용어 |
 | UX-002 | 한글 줄바꿈 (word-break: keep-all) | Done | claude | globals.css + overflow-wrap: break-word |
 | UX-003 | i18n 구조 확장 | Done | claude | MessageSchema + ko.ts + useT() hook, 4개 섹션 |
-| UX-004 | Playwright 스냅샷 갱신 | Done | claude | 11개 PNG 베이스라인 재생성 |
+| UX-004 | Playwright 스냅샷 갱신 | Done | claude | 12개 PNG 베이스라인 재생성 (4페이지 × 3뷰포트) |
 | SETTINGS-001 | 설정 페이지 탭 구조 전환 | Done | claude | 개발자 정보 제거, 4개 탭 (내 계정/사용량/워크스페이스/프로바이더) |
 | SETTINGS-002 | 프로필 편집 + 아바타 업로드 | Done | claude | GET/PATCH profile, POST avatar, InlineEdit 컴포넌트 |
 | SETTINGS-003 | 타입별 사용량 프로그레스바 | Done | claude | FREE_LIMITS 10개 타입별 used/limit 시각화 |

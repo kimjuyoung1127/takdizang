@@ -67,6 +67,8 @@
   - `GET /api/projects/[id]/model-compose?jobId=...`
   - `POST /api/projects/[id]/scene-compose`
   - `GET /api/projects/[id]/scene-compose?jobId=...`
+- Cuts
+  - `POST /api/projects/[id]/cuts/handoff` — 선택 이미지 ID로 컷 생성
 - Remotion / Export
   - `POST /api/projects/[id]/remotion/preview`
   - `POST /api/projects/[id]/remotion/render`
@@ -92,3 +94,5 @@
   - `POST /api/settings/password` — 비밀번호 변경
 - Usage
   - `GET /api/usage/me` — 현재 워크스페이스 사용량 조회
+- Uploads
+  - `GET /uploads/[...path]` — Supabase Storage 프록시 (파일 서빙)

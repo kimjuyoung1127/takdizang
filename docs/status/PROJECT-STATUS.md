@@ -70,7 +70,7 @@ Last Updated: 2026-03-25 (KST, UX 텍스트 리라이팅 + i18n)
   - `/` (홈), `/projects` (탐색기), `/workspace` (허브), `/settings`, `/landing`
   - project subroutes: `compose`, `editor`, `preview`, `result`
   - auth routes: `/login`, `/signup`, `/auth/callback`
-- API surface: 25+ route handlers
+- API surface: 30+ route handlers (Settings API 5개 포함)
 - 컴포즈 AI 기능: AiGenerateTab (드래그드롭) + SceneCompose + ModelCompose + RemoveBg + ImageGenerate + AI Tool Dialog
 - 에디터 기능: React Flow 노드 에디터 × 6개 모드 + 구조보기 단일 뷰 + 파이프라인 실행
 - Playwright visual test: 12개 (4 pages × 3 viewports)
