@@ -337,7 +337,7 @@ function DraggablePaletteItem({ tmpl, onAddBlock, onPreviewBlock }: { tmpl: Bloc
 
 export function BlockPalette({ onAddBlock, onPreviewBlock }: BlockPaletteProps) {
   return (
-    <div className="flex w-64 flex-col border-r border-[rgb(212_196_181_/_0.55)] bg-[rgb(239_231_220_/_0.62)] backdrop-blur-xl">
+    <div className="flex h-full w-full flex-col border-r border-[rgb(212_196_181_/_0.55)] bg-[rgb(239_231_220_/_0.62)] backdrop-blur-xl md:w-64">
       <div className="border-b border-[rgb(214_199_184_/_0.62)] px-4 py-4">
         <p className="takdi-kicker">Block library</p>
         <h2 className={`mt-3 text-sm font-semibold tracking-[-0.03em] ${WORKSPACE_TEXT.title}`}>블록 선택</h2>

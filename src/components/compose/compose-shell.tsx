@@ -41,6 +41,8 @@ import { AiToolDialog } from "./ai-tool-dialog";
 import { DraftGeneratorDialog } from "./draft-generator-dialog";
 import { BlockContextMenu, type ContextMenuPosition } from "./block-context-menu";
 import { generateBlockText } from "@/lib/api-client";
+import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
+import { Plus, SlidersHorizontal } from "lucide-react";
 import { WORKSPACE_SURFACE, WORKSPACE_TEXT } from "@/lib/workspace-surface";
 
 const UNDO_COALESCE_MS = 400;
@@ -96,6 +98,8 @@ export function ComposeShell({ projectId, projectName, initialDoc, projectStatus
   const [saveTemplateOpen, setSaveTemplateOpen] = useState(false);
   const [leaveOpen, setLeaveOpen] = useState(false);
   const [mobilePreview, setMobilePreview] = useState(false);
+  const [mobilePaletteOpen, setMobilePaletteOpen] = useState(false);
+  const [mobilePropsOpen, setMobilePropsOpen] = useState(false);
   const [draggingLabel, setDraggingLabel] = useState<string | null>(null);
   const [aiToolType, setAiToolType] = useState<"video" | "thumbnail" | "script" | null>(null);
   const [bulkGenerateOpen, setBulkGenerateOpen] = useState(false);
@@ -706,7 +710,10 @@ export function ComposeShell({ projectId, projectName, initialDoc, projectStatus
           />
 
           <div className="flex flex-1 overflow-hidden">
-            <BlockPalette onAddBlock={handleAddBlock} onPreviewBlock={handlePreviewBlock} />
+            {/* Desktop palette */}
+            <div className="hidden md:block">
+              <BlockPalette onAddBlock={handleAddBlock} onPreviewBlock={handlePreviewBlock} />
+            </div>
 
             <BlockCanvas
               ref={canvasRef}
@@ -717,7 +724,13 @@ export function ComposeShell({ projectId, projectName, initialDoc, projectStatus
               exporting={exportOpen}
               insertIndex={insertIndex}
               onBlocksChange={handleBlocksChange}
-              onSelectBlock={setSelectedBlockId}
+              onSelectBlock={(id) => {
+                setSelectedBlockId(id);
+                // 모바일에서 블록 선택 시 자동으로 속성 Sheet 열기
+                if (id && window.innerWidth < 768) {
+                  setMobilePropsOpen(true);
+                }
+              }}
               onInsertBlock={handleInsertBlock}
               onUpdateBlock={handleUpdateBlock}
               onContextMenu={handleContextMenu}
@@ -726,12 +739,66 @@ export function ComposeShell({ projectId, projectName, initialDoc, projectStatus
               onCancelPlace={handleCancelPlace}
             />
 
-            <RightPanel
-              block={selectedBlock}
-              onUpdate={handleUpdateBlock}
-              projectId={projectId}
-            />
+            {/* Desktop right panel */}
+            <div className="hidden md:block">
+              <RightPanel
+                block={selectedBlock}
+                onUpdate={handleUpdateBlock}
+                projectId={projectId}
+              />
+            </div>
           </div>
+
+          {/* Mobile FABs */}
+          <div className="fixed bottom-6 right-4 z-40 flex flex-col gap-3 md:hidden">
+            <button
+              type="button"
+              onClick={() => setMobilePaletteOpen(true)}
+              className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--takdi-accent)] text-white shadow-[0_8px_24px_rgba(217,124,103,0.35)]"
+              aria-label="블록 추가"
+            >
+              <Plus className="h-5 w-5" />
+            </button>
+            {selectedBlock && (
+              <button
+                type="button"
+                onClick={() => setMobilePropsOpen(true)}
+                className="flex h-12 w-12 items-center justify-center rounded-full border border-[rgb(214_199_184_/_0.65)] bg-white text-[var(--takdi-text)] shadow-[0_8px_24px_rgba(80,54,34,0.12)]"
+                aria-label="속성 편집"
+              >
+                <SlidersHorizontal className="h-5 w-5" />
+              </button>
+            )}
+          </div>
+
+          {/* Mobile palette Sheet */}
+          <Sheet open={mobilePaletteOpen} onOpenChange={setMobilePaletteOpen}>
+            <SheetContent side="left" showCloseButton={false} className="w-72 p-0">
+              <SheetTitle className="sr-only">블록 팔레트</SheetTitle>
+              <BlockPalette
+                onAddBlock={(block) => {
+                  handleAddBlock(block);
+                  setMobilePaletteOpen(false);
+                }}
+                onPreviewBlock={(block) => {
+                  handlePreviewBlock(block);
+                  setMobilePaletteOpen(false);
+                }}
+              />
+            </SheetContent>
+          </Sheet>
+
+          {/* Mobile properties Sheet */}
+          <Sheet open={mobilePropsOpen} onOpenChange={setMobilePropsOpen}>
+            <SheetContent side="right" showCloseButton={false} className="w-80 p-0">
+              <SheetTitle className="sr-only">블록 속성</SheetTitle>
+              <RightPanel
+                block={selectedBlock}
+                onUpdate={handleUpdateBlock}
+                projectId={projectId}
+              />
+            </SheetContent>
+          </Sheet>
         </div>
 
         <DragOverlay>
