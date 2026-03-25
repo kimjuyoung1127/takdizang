@@ -106,9 +106,17 @@ export function ComposeShell({ projectId, projectName, initialDoc, projectStatus
   const [contextMenu, setContextMenu] = useState<ContextMenuPosition | null>(null);
   const [pendingBlock, setPendingBlock] = useState<{ block: Block; insertAt: number } | null>(null);
   const canvasRef = useRef<HTMLDivElement>(null);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
 
   const sensors = useSensors(
-    useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
+    useSensor(PointerSensor, { activationConstraint: { distance: isMobile ? 9999 : 8 } }),
   );
 
   const blocksRef = useRef(blocks);

@@ -108,7 +108,7 @@ function SortableBlock({
         onContextMenu?.(e, block.id, block.type);
       }}
     >
-      <div className="absolute -left-10 top-2 z-10 flex flex-col gap-1 opacity-0 transition-opacity group-hover:opacity-100">
+      <div className="absolute -left-10 top-2 z-10 hidden flex-col gap-1 opacity-0 transition-opacity group-hover:opacity-100 md:flex">
         <button
           {...attributes}
           {...listeners}

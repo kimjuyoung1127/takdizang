@@ -138,6 +138,7 @@ export function NodeEditorShell({
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
   const [mobilePaletteOpen, setMobilePaletteOpen] = useState(false);
   const [mobilePropsOpen, setMobilePropsOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const [pipelineStep, setPipelineStep] = useState<PipelineStep>("idle");
   const [globalRatio, setGlobalRatio] = useState("9:16");
   const [saving, setSaving] = useState(false);
@@ -153,6 +154,13 @@ export function NodeEditorShell({
   const abortRef = useRef(false);
   const autoSaveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const mountedShortformRef = useRef(false);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
 
   const graphValidation = useMemo(
     () => validateEditorGraph(mode, canvasSnapshot.nodes, canvasSnapshot.edges),
@@ -703,7 +711,7 @@ export function NodeEditorShell({
           mode={mode}
           initialSnapshot={initialGraph ?? undefined}
           className="h-full w-full"
-          readOnlyStructure={guidedReadOnlyStructure || invalidGuidedGraph}
+          readOnlyStructure={guidedReadOnlyStructure || invalidGuidedGraph || isMobile}
           canInsertNodes={!guidedReadOnlyStructure && !guidedMode}
           canDuplicateNodes={!guidedReadOnlyStructure && !guidedMode}
           canEditEdges={!guidedReadOnlyStructure && !guidedMode}
