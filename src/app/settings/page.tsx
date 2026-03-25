@@ -2,6 +2,7 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { AppLayout } from "@/components/layout/app-layout";
+import { SummaryCard } from "@/components/shared/summary-card";
 import { AuthError } from "@/lib/workspace-guard";
 import { getSettingsSummary } from "@/features/workspace-hub/home-feed";
 import { formatCurrentScope } from "@/i18n/format";
@@ -13,24 +14,6 @@ export const metadata: Metadata = {
   title: "설정 | Takdi Studio",
   description: "워크스페이스 운영 상태를 확인해요.",
 };
-
-function SummaryCard({
-  title,
-  value,
-  description,
-}: {
-  title: string;
-  value: string;
-  description: string;
-}) {
-  return (
-    <div className="takdi-panel-strong min-h-[140px] rounded-[1.8rem] p-6">
-      <p className="takdi-stat-label">{title}</p>
-      <p className="takdi-stat-value mt-3">{value}</p>
-      <p className="mt-3 text-sm leading-6 text-[var(--takdi-text-muted)]">{description}</p>
-    </div>
-  );
-}
 
 function formatDateTime(date: string | Date) {
   return new Intl.DateTimeFormat("ko-KR", {
@@ -160,7 +143,7 @@ export default async function SettingsPage() {
             {summary.recentActivity.map((item) => (
               <div
                 key={item.id}
-                className="flex flex-col gap-2 rounded-[1.45rem] border border-[rgb(232_219_206_/_0.9)] bg-[linear-gradient(160deg,rgba(252,250,247,0.96),rgba(255,255,255,0.74))] px-4 py-4 md:flex-row md:items-center md:justify-between"
+                className="takdi-activity-item"
               >
                 <div>
                   <p className="text-sm font-semibold text-[var(--takdi-text)]">{item.label}</p>

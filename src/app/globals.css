@@ -413,6 +413,25 @@ h6,
     border-radius: 9999px;
   }
 
+  /* ── Activity item ── */
+  .takdi-activity-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    border-radius: var(--takdi-radius-lg);
+    border: 1px solid rgb(232 219 206 / 0.9);
+    background: linear-gradient(160deg, rgba(252,250,247,0.96), rgba(255,255,255,0.74));
+    padding: 1rem;
+  }
+
+  @media (min-width: 768px) {
+    .takdi-activity-item {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+    }
+  }
+
   /* ── Block container ── */
   .takdi-block {
     border-radius: var(--takdi-radius-xl);

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { AppLayout } from "@/components/layout/app-layout";
+import { SummaryCard } from "@/components/shared/summary-card";
 import { AuthError } from "@/lib/workspace-guard";
 import { getSettingsSummary } from "@/features/workspace-hub/home-feed";
 
@@ -10,24 +11,6 @@ export const metadata: Metadata = {
   title: "워크스페이스 | Takdi Studio",
   description: "워크스페이스 허브에서 운영 상태와 확장 준비 항목을 확인합니다.",
 };
-
-function SummaryCard({
-  title,
-  value,
-  description,
-}: {
-  title: string;
-  value: string;
-  description: string;
-}) {
-  return (
-    <div className="takdi-panel-strong rounded-[1.8rem] p-6">
-      <p className="takdi-stat-label">{title}</p>
-      <p className="takdi-stat-value mt-3">{value}</p>
-      <p className="mt-3 text-sm leading-6 text-[var(--takdi-text-muted)]">{description}</p>
-    </div>
-  );
-}
 
 function PlaceholderCard({
   title,
@@ -148,7 +131,7 @@ export default async function WorkspacePage() {
               {summary.recentActivity.map((item) => (
                 <div
                   key={item.id}
-                  className="flex flex-col gap-2 rounded-[1.45rem] border border-[rgb(232_219_206_/_0.9)] bg-[linear-gradient(160deg,rgba(252,250,247,0.96),rgba(255,255,255,0.74))] px-4 py-4 md:flex-row md:items-center md:justify-between"
+                  className="takdi-activity-item"
                 >
                   <div>
                     <p className="text-sm font-semibold text-[var(--takdi-text)]">{item.label}</p>
