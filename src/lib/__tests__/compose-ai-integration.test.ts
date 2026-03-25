@@ -22,14 +22,14 @@ describe("usage-guard 이벤트 체계", () => {
 
     // FREE_LIMITS 파싱
     const limitsMatch = content.match(
-      /const FREE_LIMITS[^{]*\{([^}]+)\}/s,
+      /const FREE_LIMITS[^{]*\{([^}]+)\}/,
     );
     expect(limitsMatch).toBeTruthy();
     const limitsBody = limitsMatch![1];
 
     // COST_ESTIMATES 파싱
     const costMatch = content.match(
-      /export const COST_ESTIMATES[^{]*\{([^}]+)\}/s,
+      /export const COST_ESTIMATES[^{]*\{([^}]+)\}/,
     );
     expect(costMatch).toBeTruthy();
 
@@ -79,8 +79,8 @@ describe("usage-guard 이벤트 체계", () => {
     const path = await import("path");
     const content = fs.readFileSync(path.resolve(__dirname, "../usage-guard.ts"), "utf-8");
 
-    const limitsMatch = content.match(/const FREE_LIMITS[^{]*\{([^}]+)\}/s);
-    const costMatch = content.match(/export const COST_ESTIMATES[^{]*\{([^}]+)\}/s);
+    const limitsMatch = content.match(/const FREE_LIMITS[^{]*\{([^}]+)\}/);
+    const costMatch = content.match(/export const COST_ESTIMATES[^{]*\{([^}]+)\}/);
     expect(limitsMatch).toBeTruthy();
     expect(costMatch).toBeTruthy();
 
@@ -342,12 +342,12 @@ describe("UI 컴포넌트 구조 — quick-actions.tsx", () => {
 
   it("한국어 라벨 사용", () => {
     expect(content).toContain("한 번에 초안 만들기");
-    expect(content).toContain("AI 문구 생성");
-    expect(content).toContain("텍스트 다시 쓰기");
+    expect(content).toContain("AI로 문구 만들기");
+    expect(content).toContain("다른 톤으로 다시 쓰기");
     expect(content).toContain("빈 칸 채우기");
-    expect(content).toContain("비슷한 버전 추가");
-    expect(content).toContain("배경 합성");
-    expect(content).toContain("모델컷 합성");
+    expect(content).toContain("비슷한 버전 만들기");
+    expect(content).toContain("배경 바꾸기");
+    expect(content).toContain("모델 착용 합성");
     expect(content).toContain("배경 제거");
   });
 
@@ -357,7 +357,7 @@ describe("UI 컴포넌트 구조 — quick-actions.tsx", () => {
 
   it("상태 기반 비활성 (status-generated)", () => {
     expect(content).toContain('"status-generated"');
-    expect(content).toContain("초안을 만들면 사용할 수 있어요");
+    expect(content).toContain("먼저 초안을 만들어주세요");
   });
 
   it("키보드 탐색 (ArrowUp/Down, Enter, Escape)", () => {
@@ -394,7 +394,7 @@ describe("UI 컴포넌트 구조 — draft-generator-dialog.tsx", () => {
   });
 
   it("교체 경고 표시", () => {
-    expect(content).toContain("현재 블록이 새 초안으로 교체됩니다");
+    expect(content).toContain("지금 만든 블록이 새 초안으로 바뀌어요");
   });
 
   it("bulkGenerateContent 호출", () => {
@@ -436,25 +436,20 @@ describe("UI 컴포넌트 구조 — block-context-menu.tsx", () => {
   });
 
   it("AI 섹션 라벨", () => {
-    expect(content).toContain("AI 문구 생성");
-    expect(content).toContain("텍스트 다시 쓰기");
-    expect(content).toContain("AI 이미지 생성");
-    expect(content).toContain("배경 합성");
-    expect(content).toContain("모델컷 합성");
+    expect(content).toContain("AI로 문구 만들기");
+    expect(content).toContain("다른 톤으로 다시 쓰기");
+    expect(content).toContain("AI로 이미지 만들기");
+    expect(content).toContain("배경 바꾸기");
+    expect(content).toContain("모델 착용 합성");
     expect(content).toContain("배경 제거");
   });
 
   it("편집 섹션 라벨", () => {
-    expect(content).toContain("비슷한 버전 추가");
+    expect(content).toContain("비슷한 버전 만들기");
     expect(content).toContain("복제");
     expect(content).toContain("삭제");
     expect(content).toContain("위로 이동");
     expect(content).toContain("아래로 이동");
-  });
-
-  it("빠른 실행 바로가기 (Ctrl+K)", () => {
-    expect(content).toContain("빠른 실행");
-    expect(content).toContain("Ctrl+K");
   });
 
   it("텍스트/이미지 블록 타입 분기", () => {
@@ -487,24 +482,13 @@ describe("compose-shell 통합", () => {
   });
 
   it("새 컴포넌트 import", () => {
-    expect(content).toContain("QuickActions");
     expect(content).toContain("DraftGeneratorDialog");
     expect(content).toContain("BlockContextMenu");
   });
 
-  it("3개 새 state", () => {
-    expect(content).toContain("commandPaletteOpen");
+  it("주요 state", () => {
     expect(content).toContain("bulkGenerateOpen");
     expect(content).toContain("contextMenu");
-  });
-
-  it("Ctrl+K 핸들러가 input 가드 바깥에 있음", () => {
-    // Ctrl+K는 tagName 체크 전에 나와야 함
-    const ctrlKIdx = content.indexOf('event.key === "k"');
-    const tagNameIdx = content.indexOf('element.tagName === "INPUT"');
-    expect(ctrlKIdx).toBeGreaterThan(0);
-    expect(tagNameIdx).toBeGreaterThan(0);
-    expect(ctrlKIdx).toBeLessThan(tagNameIdx);
   });
 
   it("handleFillEmpty 핸들러", () => {
@@ -553,8 +537,8 @@ describe("compose-shell 통합", () => {
     expect(content).toContain("onContextMenu={handleContextMenu}");
   });
 
-  it("onQuickActions를 ComposeToolbar에 전달", () => {
-    expect(content).toContain("onQuickActions");
+  it("onAiGenerate를 ComposeToolbar에 전달", () => {
+    expect(content).toContain("onAiGenerate");
   });
 });
 
@@ -599,7 +583,7 @@ describe("block-canvas onContextMenu 통합", () => {
 // 9. compose-toolbar Ctrl+K 버튼
 // ══════════════════════════════════════
 
-describe("compose-toolbar 빠른 실행 버튼", () => {
+describe("compose-toolbar 구조", () => {
   let content: string;
 
   it("파일 로드", async () => {
@@ -612,19 +596,13 @@ describe("compose-toolbar 빠른 실행 버튼", () => {
     expect(content).toBeTruthy();
   });
 
-  it("onQuickActions prop", () => {
-    expect(content).toContain("onQuickActions");
+  it("ComposeToolbar 컴포넌트 export", () => {
+    expect(content).toContain("export function ComposeToolbar");
   });
 
-  it("빠른 실행 버튼 라벨", () => {
-    expect(content).toContain("빠른 실행");
-  });
-
-  it("Ctrl+K 단축키 힌트", () => {
-    expect(content).toContain("⌘K");
-  });
-
-  it("Search 아이콘 import", () => {
-    expect(content).toContain("Search");
+  it("AI 도구 드롭다운 props", () => {
+    expect(content).toContain("onAiVideoRender");
+    expect(content).toContain("onAiThumbnail");
+    expect(content).toContain("onAiScript");
   });
 });
