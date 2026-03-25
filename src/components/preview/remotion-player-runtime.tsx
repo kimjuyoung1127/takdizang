@@ -26,7 +26,8 @@ export function RemotionPlayerRuntime({
   compositionId,
   inputProps,
 }: RemotionPlayerRuntimeProps) {
-  const [PlayerComponent, setPlayerComponent] = useState<ComponentType<Record<string, unknown>> | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [PlayerComponent, setPlayerComponent] = useState<ComponentType<any> | null>(null);
   const [CompositionComponent, setCompositionComponent] =
     useState<ComponentType<RemotionInputProps> | null>(null);
   const [status, setStatus] = useState<"loading" | "ready" | "error">("loading");
