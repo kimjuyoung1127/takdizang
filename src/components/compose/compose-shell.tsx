@@ -163,7 +163,7 @@ export function ComposeShell({ projectId, projectName, initialDoc, projectStatus
     } catch (error) {
       toast.error(formatComposeDocumentSaveFailed(
         messages,
-        error instanceof Error ? error.message : "알 수 없는 오류",
+        error instanceof Error ? error.message : "알 수 없는 오류가 발생했어요",
       ));
       return false;
     } finally {
@@ -311,7 +311,7 @@ export function ComposeShell({ projectId, projectName, initialDoc, projectStatus
     } catch (error) {
       toast.error(formatFavoriteTemplateSaveFailed(
         messages,
-        error instanceof Error ? error.message : "알 수 없는 오류",
+        error instanceof Error ? error.message : "알 수 없는 오류가 발생했어요",
       ));
     } finally {
       setTemplateSaving(false);
@@ -405,10 +405,10 @@ export function ComposeShell({ projectId, projectName, initialDoc, projectStatus
     };
     const emptyBlocks = blocksRef.current.filter(hasEmptyText);
     if (emptyBlocks.length === 0) {
-      toast.info("빈 칸이 없습니다");
+      toast.info("채울 빈 칸이 없어요");
       return;
     }
-    const confirmed = window.confirm(`${emptyBlocks.length}개 블록을 채웁니다 (약 ${emptyBlocks.length * 3} 크레딧)`);
+    const confirmed = window.confirm(`${emptyBlocks.length}개 블록의 빈 칸을 AI로 채울까요? (약 ${emptyBlocks.length * 3} 크레딧)`);
     if (!confirmed) return;
     pushUndo(blocksRef.current);
     for (const block of emptyBlocks) {
@@ -418,11 +418,11 @@ export function ComposeShell({ projectId, projectName, initialDoc, projectStatus
           prev.map((b) => (b.id === block.id ? { ...b, ...result } as Block : b)),
         );
       } catch (err) {
-        toast.error(`블록 생성 실패: ${err instanceof Error ? err.message : "알 수 없는 오류"}`);
+        toast.error(`텍스트를 만들지 못했어요: ${err instanceof Error ? err.message : "잠시 후 다시 시도해주세요"}`);
         break;
       }
     }
-    toast.success(`${emptyBlocks.length}개 블록의 빈 칸을 채웠습니다`);
+    toast.success(`${emptyBlocks.length}개 블록의 빈 칸을 채웠어요`);
   }, [projectId, pushUndo]);
 
   const handleAddVariation = useCallback(async (blockId: string) => {
@@ -443,9 +443,9 @@ export function ComposeShell({ projectId, projectName, initialDoc, projectStatus
         return next;
       });
       setSelectedBlockId(clone.id);
-      toast.success("변형 블록을 추가했습니다");
+      toast.success("비슷한 버전을 추가했어요");
     } catch (err) {
-      toast.error(`변형 생성 실패: ${err instanceof Error ? err.message : "알 수 없는 오류"}`);
+      toast.error(`변형을 만들지 못했어요: ${err instanceof Error ? err.message : "잠시 후 다시 시도해주세요"}`);
     }
   }, [projectId, pushUndo]);
 
@@ -553,8 +553,8 @@ export function ComposeShell({ projectId, projectName, initialDoc, projectStatus
         if (!acceptTypes.includes(resultType)) {
           toast.error(
             resultType === "text"
-              ? "텍스트 결과는 이미지 필드에 적용할 수 없어요"
-              : "이미지 결과는 텍스트 필드에 적용할 수 없어요",
+              ? "텍스트는 이미지 자리에 넣을 수 없어요. 텍스트 필드에 드래그해주세요."
+              : "이미지는 텍스트 자리에 넣을 수 없어요. 이미지 필드에 드래그해주세요.",
           );
           return;
         }
@@ -562,7 +562,7 @@ export function ComposeShell({ projectId, projectName, initialDoc, projectStatus
         const value = extractAiFieldValue(data, fieldName, resultType);
         if (value !== undefined) {
           handleUpdateBlock(blockId, { [fieldName]: value });
-          toast.success("AI 결과가 적용되었어요");
+          toast.success("AI 결과를 적용했어요");
         }
       }
       return;

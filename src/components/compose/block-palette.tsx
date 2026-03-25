@@ -47,7 +47,7 @@ export const BLOCK_TEMPLATES: BlockTemplate[] = [
   {
     type: "hero",
     label: "메인 배너",
-    desc: "상단 메인 이미지 영역",
+    desc: "상단에 크게 보여줄 대표 이미지예요",
     icon: Crown,
     create: () => ({
       id: nextId(),
@@ -60,7 +60,7 @@ export const BLOCK_TEMPLATES: BlockTemplate[] = [
   {
     type: "selling-point",
     label: "핵심 장점",
-    desc: "제품의 핵심 장점을 카드로 보여줍니다",
+    desc: "제품의 장점을 카드로 한눈에 보여줘요",
     icon: Star,
     create: () => ({
       id: nextId(),
@@ -74,7 +74,7 @@ export const BLOCK_TEMPLATES: BlockTemplate[] = [
   {
     type: "image-full",
     label: "전체 이미지",
-    desc: "화면 가득 이미지 한 장",
+    desc: "화면 가득 채우는 이미지 한 장",
     icon: ImageIcon,
     create: () => ({
       id: nextId(),
@@ -87,7 +87,7 @@ export const BLOCK_TEMPLATES: BlockTemplate[] = [
   {
     type: "image-grid",
     label: "이미지 모음",
-    desc: "여러 이미지를 격자로 배치",
+    desc: "여러 장의 이미지를 격자로 보여줘요",
     icon: Grid,
     create: () => ({
       id: nextId(),
@@ -115,7 +115,7 @@ export const BLOCK_TEMPLATES: BlockTemplate[] = [
   {
     type: "image-text",
     label: "이미지+텍스트",
-    desc: "이미지와 설명을 나란히 배치",
+    desc: "이미지 옆에 설명을 함께 넣어요",
     icon: Columns,
     create: () => ({
       id: nextId(),
@@ -130,7 +130,7 @@ export const BLOCK_TEMPLATES: BlockTemplate[] = [
   {
     type: "spec-table",
     label: "제품 사양표",
-    desc: "제품 사양을 표로 정리",
+    desc: "제품 스펙을 깔끔한 표로 정리해요",
     icon: Table,
     create: () => ({
       id: nextId(),
@@ -143,7 +143,7 @@ export const BLOCK_TEMPLATES: BlockTemplate[] = [
   {
     type: "comparison",
     label: "비교",
-    desc: "Before & After 비교",
+    desc: "Before / After를 나란히 비교해요",
     icon: GitCompare,
     create: () => ({
       id: nextId(),
@@ -157,7 +157,7 @@ export const BLOCK_TEMPLATES: BlockTemplate[] = [
   {
     type: "review",
     label: "리뷰",
-    desc: "고객 후기를 보여줍니다",
+    desc: "고객 후기를 카드로 보여줘요",
     icon: MessageSquare,
     create: () => ({
       id: nextId(),
@@ -171,7 +171,7 @@ export const BLOCK_TEMPLATES: BlockTemplate[] = [
   {
     type: "divider",
     label: "구분선",
-    desc: "블록 사이 구분선/여백",
+    desc: "섹션 사이에 구분선을 넣어요",
     icon: Minus,
     create: () => ({
       id: nextId(),
@@ -184,7 +184,7 @@ export const BLOCK_TEMPLATES: BlockTemplate[] = [
   {
     type: "video",
     label: "영상",
-    desc: "영상 또는 GIF 삽입",
+    desc: "영상이나 GIF를 삽입해요",
     icon: Video,
     create: () => ({
       id: nextId(),
@@ -198,7 +198,7 @@ export const BLOCK_TEMPLATES: BlockTemplate[] = [
   {
     type: "cta",
     label: "구매 유도",
-    desc: "구매 버튼 + 안내 문구",
+    desc: "구매 버튼과 안내 문구를 넣어요",
     icon: MousePointerClick,
     create: () => ({
       id: nextId(),
@@ -214,7 +214,7 @@ export const BLOCK_TEMPLATES: BlockTemplate[] = [
   {
     type: "usage-steps",
     label: "사용 방법",
-    desc: "번호 순서로 사용 방법 안내",
+    desc: "단계별로 사용법을 안내해요",
     icon: ListOrdered,
     create: () => ({
       id: nextId(),
@@ -231,7 +231,7 @@ export const BLOCK_TEMPLATES: BlockTemplate[] = [
   {
     type: "faq",
     label: "FAQ",
-    desc: "자주 묻는 질문과 답변",
+    desc: "자주 묻는 질문과 답변을 정리해요",
     icon: CircleQuestionMark,
     create: () => ({
       id: nextId(),
@@ -247,7 +247,7 @@ export const BLOCK_TEMPLATES: BlockTemplate[] = [
   {
     type: "notice",
     label: "공지/안내",
-    desc: "배송·교환·환불 안내사항",
+    desc: "배송·교환·환불 등 안내사항을 넣어요",
     icon: CircleAlert,
     create: () => ({
       id: nextId(),
@@ -264,7 +264,7 @@ export const BLOCK_TEMPLATES: BlockTemplate[] = [
   {
     type: "banner-strip",
     label: "띠배너",
-    desc: "화면 전체폭 강조 띠 배너",
+    desc: "화면 전체를 가로지르는 강조 배너예요",
     icon: Ribbon,
     create: () => ({
       id: nextId(),
@@ -279,7 +279,7 @@ export const BLOCK_TEMPLATES: BlockTemplate[] = [
   {
     type: "price-promo",
     label: "가격/프로모션",
-    desc: "정가·할인가·할인율 표시",
+    desc: "할인 정보와 가격을 눈에 띄게 보여줘요",
     icon: Tag,
     create: () => ({
       id: nextId(),
@@ -295,7 +295,7 @@ export const BLOCK_TEMPLATES: BlockTemplate[] = [
   {
     type: "trust-badge",
     label: "인증/뱃지",
-    desc: "인증 마크·수상 이력 나열",
+    desc: "인증 마크와 수상 이력을 보여줘요",
     icon: ShieldCheck,
     create: () => ({
       id: nextId(),
@@ -340,7 +340,7 @@ export function BlockPalette({ onAddBlock, onPreviewBlock }: BlockPaletteProps) 
     <div className="flex w-64 flex-col border-r border-[rgb(212_196_181_/_0.55)] bg-[rgb(239_231_220_/_0.62)] backdrop-blur-xl">
       <div className="border-b border-[rgb(214_199_184_/_0.62)] px-4 py-4">
         <p className="takdi-kicker">Block library</p>
-        <h2 className={`mt-3 text-sm font-semibold tracking-[-0.03em] ${WORKSPACE_TEXT.title}`}>콘텐츠 블록</h2>
+        <h2 className={`mt-3 text-sm font-semibold tracking-[-0.03em] ${WORKSPACE_TEXT.title}`}>블록 선택</h2>
       </div>
       <div className="flex-1 overflow-y-auto p-3">
         <div className="grid grid-cols-2 gap-2">

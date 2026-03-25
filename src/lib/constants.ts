@@ -43,7 +43,7 @@ export const DEFAULT_MODE_CONFIG: ModeNodeConfig = MODE_NODE_CONFIG["freeform"];
 
 /** 노드 타입 → 한글 라벨 */
 export const NODE_TYPE_LABELS: Record<FlowNodeType, string> = {
-  prompt: "프롬프트 입력",
+  prompt: "내용 입력",
   "generate-images": "이미지 생성",
   bgm: "배경음악",
   cuts: "장면 편집",
@@ -56,15 +56,15 @@ export const NODE_TYPE_LABELS: Record<FlowNodeType, string> = {
 
 /** 노드 타입 → 설명 */
 export const NODE_TYPE_DESCS: Record<FlowNodeType, string> = {
-  prompt: "원하는 내용을 직접 입력하세요",
-  "generate-images": "장면별 이미지를 생성합니다",
-  bgm: "배경음악을 설정합니다",
-  cuts: "장면 순서와 전환을 편집합니다",
-  render: "영상/GIF를 합성합니다",
-  export: "최종 파일을 출력합니다",
-  "upload-image": "상품 이미지를 업로드합니다",
-  "remove-bg": "배경을 자동으로 제거합니다",
-  "model-compose": "AI 모델 착용 이미지를 합성합니다",
+  prompt: "만들고 싶은 내용을 입력해주세요",
+  "generate-images": "입력한 내용으로 이미지를 만들어요",
+  bgm: "영상에 어울리는 배경음악을 설정해요",
+  cuts: "장면 순서와 전환 효과를 편집해요",
+  render: "영상이나 GIF로 합성해요",
+  export: "완성된 파일을 내보내요",
+  "upload-image": "사용할 상품 이미지를 올려주세요",
+  "remove-bg": "이미지 배경을 자동으로 제거해요",
+  "model-compose": "AI가 모델 착용 이미지를 합성해요",
 };
 
 /** 프로젝트 모드 → 한글 라벨 */
@@ -205,9 +205,9 @@ export const HOOK_LIBRARY: Record<string, Record<HookStyle, string>> = {
 
 /** 톤 프리셋 (제로 프롬프트 브리프 빌더용) */
 export const TONE_PRESETS: Array<{ value: string; label: string; desc: string }> = [
-  { value: "professional", label: "전문적", desc: "신뢰감 있는 정보 중심" },
-  { value: "friendly", label: "친근한", desc: "편안하고 가까운 느낌" },
-  { value: "luxury", label: "럭셔리", desc: "프리미엄, 고급스러운 톤" },
+  { value: "professional", label: "전문적", desc: "신뢰감 있고 정보가 풍부한 톤" },
+  { value: "friendly", label: "친근한", desc: "편안하고 다가가기 쉬운 톤" },
+  { value: "luxury", label: "럭셔리", desc: "고급스럽고 세련된 톤" },
   { value: "playful", label: "발랄한", desc: "활기차고 재미있는 톤" },
 ];
 

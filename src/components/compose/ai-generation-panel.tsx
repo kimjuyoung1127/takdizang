@@ -64,7 +64,7 @@ function ResultChip({ result }: { result: AiGeneratedResult }) {
       {...attributes}
       {...listeners}
       className={`flex cursor-grab items-center gap-2 rounded-xl border border-[rgb(214_199_184_/_0.55)] ${WORKSPACE_SURFACE.panelStrong} px-3 py-2 text-xs transition-all hover:border-[rgb(230_182_169_/_0.8)] hover:shadow-sm ${isDragging ? "opacity-40" : ""}`}
-      title="캔버스 필드로 드래그하여 적용"
+      title="원하는 블록 필드로 드래그해서 적용하세요"
     >
       <GripVertical className="h-3 w-3 shrink-0 text-[var(--takdi-text-subtle)]" />
       <span className={`min-w-0 flex-1 truncate ${WORKSPACE_TEXT.body}`}>{result.label}</span>
@@ -110,7 +110,7 @@ export function AiGenerateTab({ projectId }: AiGenerateTabProps) {
         setLoading(false);
       }
     } else {
-      toast.info("이미지 생성은 블록 속성 패널에서 이용해주세요");
+      toast.info("이미지는 블록을 선택한 뒤 속성 패널에서 만들 수 있어요");
     }
   }, [loading, activeTab, projectId, blockType, tone, prompt]);
 

@@ -159,7 +159,7 @@ export function QuickActions({ open, onClose, actions, selectedBlockId, selected
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="무엇을 할까요?"
+            placeholder="어떤 작업을 할까요?"
             className={`flex-1 bg-transparent text-sm outline-none placeholder:text-[var(--takdi-text-subtle)] ${WORKSPACE_TEXT.body}`}
           />
           <kbd className={`rounded-md border px-1.5 py-0.5 text-[10px] ${WORKSPACE_TEXT.muted}`}>Ctrl+K</kbd>
@@ -168,7 +168,7 @@ export function QuickActions({ open, onClose, actions, selectedBlockId, selected
         <div ref={listRef} className="max-h-[50vh] overflow-y-auto py-1">
           {filteredActions.length === 0 ? (
             <div className={`px-4 py-8 text-center text-sm ${WORKSPACE_TEXT.muted}`}>
-              일치하는 작업이 없습니다
+              일치하는 작업이 없어요
             </div>
           ) : (
             filteredActions.map((action, idx) => {
@@ -195,7 +195,7 @@ export function QuickActions({ open, onClose, actions, selectedBlockId, selected
                   <div className="min-w-0 flex-1">
                     <div className={`text-sm font-medium ${WORKSPACE_TEXT.body}`}>{action.label}</div>
                     <div className={`truncate text-xs ${WORKSPACE_TEXT.muted}`}>
-                      {disabled ? "초안을 만들면 사용할 수 있어요" : action.description}
+                      {disabled ? "먼저 초안을 만들어주세요" : action.description}
                     </div>
                   </div>
                   <div className="flex shrink-0 items-center gap-1.5">
@@ -245,22 +245,22 @@ export function buildQuickActions(handlers: {
   onTemplates: () => void;
 }): QuickAction[] {
   return [
-    { id: "bulk-draft", label: "한 번에 초안 만들기", description: "브리프로 전체 텍스트+이미지 생성", resultType: "혼합", credit: "15", icon: <Sparkles className="h-4 w-4 text-[var(--takdi-accent)]" />, condition: "always", onExecute: handlers.onBulkDraft },
-    { id: "block-text", label: "AI 문구 생성", description: "선택 블록에 AI 텍스트", resultType: "텍스트", credit: "3", icon: <Pencil className="h-4 w-4 text-blue-500" />, condition: "block-selected", onExecute: handlers.onBlockText },
-    { id: "text-rewrite", label: "텍스트 다시 쓰기", description: "톤 변경/번역/축약", resultType: "텍스트", credit: "3", icon: <RefreshCw className="h-4 w-4 text-blue-500" />, condition: "text-block", onExecute: handlers.onTextRewrite },
-    { id: "fill-empty", label: "빈 칸 채우기", description: "빈 텍스트 필드 일괄 생성", resultType: "텍스트", credit: "3×N", icon: <Sparkles className="h-4 w-4 text-amber-500" />, condition: "always", onExecute: handlers.onFillEmpty },
-    { id: "add-variation", label: "비슷한 버전 추가", description: "블록 복제+AI 변형", resultType: "혼합", credit: "3", icon: <CopyPlus className="h-4 w-4 text-violet-500" />, condition: "block-selected", onExecute: handlers.onAddVariation },
-    { id: "image-gen", label: "AI 이미지 생성", description: "프롬프트로 이미지 생성", resultType: "이미지", credit: "10", icon: <ImagePlus className="h-4 w-4 text-emerald-500" />, condition: "always", onExecute: handlers.onImageGen },
-    { id: "scene-compose", label: "배경 합성", description: "이미지에 배경 합성", resultType: "이미지", credit: "8", icon: <Wand2 className="h-4 w-4 text-emerald-500" />, condition: "image-block", onExecute: handlers.onSceneCompose },
-    { id: "model-compose", label: "모델컷 합성", description: "AI 모델 착용", resultType: "이미지", credit: "8", icon: <UserRound className="h-4 w-4 text-emerald-500" />, condition: "image-block", onExecute: handlers.onModelCompose },
-    { id: "remove-bg", label: "배경 제거", description: "이미지 배경 제거", resultType: "이미지", credit: "3", icon: <Eraser className="h-4 w-4 text-emerald-500" />, condition: "image-block", onExecute: handlers.onRemoveBg },
-    { id: "video-render", label: "영상 렌더링", description: "Remotion 영상 생성", resultType: "영상", icon: <Film className="h-4 w-4 text-purple-500" />, condition: "status-generated", onExecute: handlers.onVideoRender },
-    { id: "thumbnail", label: "썸네일 생성", description: "AI 썸네일", resultType: "이미지", credit: "5", icon: <ImagePlus className="h-4 w-4 text-purple-500" />, condition: "status-generated", onExecute: handlers.onThumbnail },
-    { id: "script", label: "마케팅 스크립트", description: "SNS 마케팅 문구", resultType: "텍스트", credit: "5", icon: <FileText className="h-4 w-4 text-purple-500" />, condition: "status-generated", onExecute: handlers.onScript },
+    { id: "bulk-draft", label: "한 번에 초안 만들기", description: "설명만 입력하면 전체 텍스트+이미지를 만들어요", resultType: "혼합", credit: "15", icon: <Sparkles className="h-4 w-4 text-[var(--takdi-accent)]" />, condition: "always", onExecute: handlers.onBulkDraft },
+    { id: "block-text", label: "AI로 문구 만들기", description: "선택한 블록에 AI 텍스트를 생성해요", resultType: "텍스트", credit: "3", icon: <Pencil className="h-4 w-4 text-blue-500" />, condition: "block-selected", onExecute: handlers.onBlockText },
+    { id: "text-rewrite", label: "다른 톤으로 다시 쓰기", description: "톤 변경, 번역, 축약을 해요", resultType: "텍스트", credit: "3", icon: <RefreshCw className="h-4 w-4 text-blue-500" />, condition: "text-block", onExecute: handlers.onTextRewrite },
+    { id: "fill-empty", label: "빈 칸 채우기", description: "비어있는 텍스트를 AI로 한 번에 채워요", resultType: "텍스트", credit: "3×N", icon: <Sparkles className="h-4 w-4 text-amber-500" />, condition: "always", onExecute: handlers.onFillEmpty },
+    { id: "add-variation", label: "비슷한 버전 만들기", description: "블록을 복제하고 AI로 내용을 바꿔요", resultType: "혼합", credit: "3", icon: <CopyPlus className="h-4 w-4 text-violet-500" />, condition: "block-selected", onExecute: handlers.onAddVariation },
+    { id: "image-gen", label: "AI로 이미지 만들기", description: "설명을 입력하면 이미지를 만들어요", resultType: "이미지", credit: "10", icon: <ImagePlus className="h-4 w-4 text-emerald-500" />, condition: "always", onExecute: handlers.onImageGen },
+    { id: "scene-compose", label: "배경 바꾸기", description: "이미지의 배경을 다른 장면으로 바꿔요", resultType: "이미지", credit: "8", icon: <Wand2 className="h-4 w-4 text-emerald-500" />, condition: "image-block", onExecute: handlers.onSceneCompose },
+    { id: "model-compose", label: "모델 착용 합성", description: "AI가 모델 착용 이미지를 만들어요", resultType: "이미지", credit: "8", icon: <UserRound className="h-4 w-4 text-emerald-500" />, condition: "image-block", onExecute: handlers.onModelCompose },
+    { id: "remove-bg", label: "배경 제거", description: "이미지 배경을 깔끔하게 제거해요", resultType: "이미지", credit: "3", icon: <Eraser className="h-4 w-4 text-emerald-500" />, condition: "image-block", onExecute: handlers.onRemoveBg },
+    { id: "video-render", label: "영상 만들기", description: "숏폼 영상을 만들어요", resultType: "영상", icon: <Film className="h-4 w-4 text-purple-500" />, condition: "status-generated", onExecute: handlers.onVideoRender },
+    { id: "thumbnail", label: "썸네일 만들기", description: "AI가 썸네일을 만들어요", resultType: "이미지", credit: "5", icon: <ImagePlus className="h-4 w-4 text-purple-500" />, condition: "status-generated", onExecute: handlers.onThumbnail },
+    { id: "script", label: "마케팅 문구 만들기", description: "SNS에 올릴 마케팅 문구를 만들어요", resultType: "텍스트", credit: "5", icon: <FileText className="h-4 w-4 text-purple-500" />, condition: "status-generated", onExecute: handlers.onScript },
     { id: "save", label: "저장", description: "Ctrl+S", icon: <Save className="h-4 w-4" />, condition: "always", onExecute: handlers.onSave },
-    { id: "preview", label: "미리보기", description: "결과 미리보기", icon: <Eye className="h-4 w-4" />, condition: "always", onExecute: handlers.onPreview },
-    { id: "export", label: "내보내기", description: "다매체 내보내기", icon: <Download className="h-4 w-4" />, condition: "always", onExecute: handlers.onExport },
-    { id: "design-check", label: "디자인 점검", description: "가드레일 검사", icon: <ShieldCheck className="h-4 w-4" />, condition: "always", onExecute: handlers.onDesignCheck },
-    { id: "templates", label: "템플릿", description: "브리프 빌더", icon: <LayoutTemplate className="h-4 w-4" />, condition: "always", onExecute: handlers.onTemplates },
+    { id: "preview", label: "미리보기", description: "완성된 결과를 미리 확인해요", icon: <Eye className="h-4 w-4" />, condition: "always", onExecute: handlers.onPreview },
+    { id: "export", label: "내보내기", description: "이미지, 카드뉴스, HTML로 내보내요", icon: <Download className="h-4 w-4" />, condition: "always", onExecute: handlers.onExport },
+    { id: "design-check", label: "디자인 검사", description: "빠뜨린 항목이 없는지 확인해요", icon: <ShieldCheck className="h-4 w-4" />, condition: "always", onExecute: handlers.onDesignCheck },
+    { id: "templates", label: "템플릿", description: "템플릿으로 빠르게 시작해요", icon: <LayoutTemplate className="h-4 w-4" />, condition: "always", onExecute: handlers.onTemplates },
   ];
 }

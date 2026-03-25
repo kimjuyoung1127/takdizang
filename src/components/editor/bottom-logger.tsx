@@ -60,7 +60,7 @@ export function BottomLogger({ logs = [] }: BottomLoggerProps) {
         <div className="h-[calc(100%-2.5rem)] overflow-y-auto px-4 pb-3 pt-2 font-mono text-xs">
           {logs.length === 0 ? (
             <p className={`py-6 text-center ${WORKSPACE_TEXT.muted}`}>
-              아직 작업 기록이 없습니다. 생성을 실행하면 기록이 표시됩니다.
+              아직 작업 기록이 없어요. 생성을 실행하면 여기에 표시돼요.
             </p>
           ) : (
             logs.map((entry) => (

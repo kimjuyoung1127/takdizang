@@ -77,7 +77,7 @@ export function SceneComposeAction({ projectId, imageUrl, onImageChange }: Props
           const assets = (result as { assets?: Array<{ filePath: string }> }).assets;
           if (assets?.[0]?.filePath) {
             onImageChange(assets[0].filePath);
-            toast.success("장면 합성이 완료되었습니다.");
+            toast.success("배경 합성이 완료됐어요");
             setOpen(false);
             setPrompt("");
           }
@@ -85,12 +85,12 @@ export function SceneComposeAction({ projectId, imageUrl, onImageChange }: Props
         }
 
         if (result.job.status === "failed") {
-          throw new Error(result.job.error || "장면 합성에 실패했습니다.");
+          throw new Error(result.job.error || "배경 합성에 실패했어요. 다시 시도해주세요.");
         }
       }
     } catch (error) {
       if (!abortRef.current) {
-        toast.error(error instanceof Error ? error.message : "장면 합성에 실패했습니다.");
+        toast.error(error instanceof Error ? error.message : "배경 합성에 실패했어요. 다시 시도해주세요.");
       }
     } finally {
       if (!abortRef.current) {

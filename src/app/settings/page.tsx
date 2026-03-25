@@ -11,7 +11,7 @@ export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "설정 | Takdi Studio",
-  description: "워크스페이스, 스토리지, 런타임 정보를 확인합니다.",
+  description: "워크스페이스 운영 상태를 확인해요.",
 };
 
 function SummaryCard({
@@ -123,7 +123,7 @@ export default async function SettingsPage() {
           <div>
             <p className="takdi-kicker">Overview</p>
             <h2 className="mt-2 text-xl font-semibold tracking-[-0.03em] text-[var(--takdi-text)]">운영 현황</h2>
-            <p className="mt-2 text-sm text-[var(--takdi-text-muted)]">편집 화면에서 숨긴 비용과 실행 이력을 이곳에서 확인합니다.</p>
+            <p className="mt-2 text-sm text-[var(--takdi-text-muted)]">이번 달 사용량과 비용을 확인할 수 있어요.</p>
           </div>
         </div>
 
@@ -131,17 +131,17 @@ export default async function SettingsPage() {
           <SummaryCard
             title="월간 작업량"
             value={String(summary.monthlyEventCount)}
-            description="이번 달 누적된 실행 이벤트 수입니다."
+            description="이번 달 실행한 작업 수예요."
           />
           <SummaryCard
             title="내보내기 수"
             value={String(summary.exportCount)}
-            description="완료된 결과 저장 건수를 기준으로 집계합니다."
+            description="완성해서 내보낸 결과물 수예요."
           />
           <SummaryCard
             title="추정 비용"
             value={`$${summary.totalEstimatedCost.toFixed(2)}`}
-            description="내부 운영 참고용 누적 비용 추정치입니다."
+            description="이번 달 누적 비용 추정치예요."
           />
         </div>
       </section>
@@ -151,7 +151,7 @@ export default async function SettingsPage() {
           <div>
             <p className="takdi-kicker">Recent activity</p>
             <h2 className="mt-2 text-xl font-semibold tracking-[-0.03em] text-[var(--takdi-text)]">최근 실행 이력</h2>
-            <p className="mt-2 text-sm text-[var(--takdi-text-muted)]">가장 최근 작업 흐름만 빠르게 확인할 수 있도록 최근 8건을 표시합니다.</p>
+            <p className="mt-2 text-sm text-[var(--takdi-text-muted)]">최근 8건의 작업 내역을 보여줘요.</p>
           </div>
         </div>
 
@@ -168,13 +168,13 @@ export default async function SettingsPage() {
                 </div>
                 <div className="text-sm text-[var(--takdi-text-subtle)] md:text-right">
                   <p>{formatDateTime(item.createdAt)}</p>
-                  <p className="mt-1">{item.costEstimate != null ? `$${item.costEstimate.toFixed(2)}` : "비용 기록 없음"}</p>
+                  <p className="mt-1">{item.costEstimate != null ? `$${item.costEstimate.toFixed(2)}` : "비용 정보 없음"}</p>
                 </div>
               </div>
             ))}
           </div>
         ) : (
-          <p className="mt-6 text-sm text-[var(--takdi-text-muted)]">아직 기록된 실행 이력이 없습니다.</p>
+          <p className="mt-6 text-sm text-[var(--takdi-text-muted)]">아직 실행 이력이 없어요. 작업을 시작하면 여기에 표시돼요.</p>
         )}
       </section>
     </AppLayout>

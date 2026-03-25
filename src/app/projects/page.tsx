@@ -12,7 +12,7 @@ export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "프로젝트 | Takdi Studio",
-  description: "워크스페이스의 최근 프로젝트와 저장된 템플릿을 탐색합니다.",
+  description: "내 프로젝트와 저장된 템플릿을 한눈에 관리해요.",
 };
 
 export default async function ProjectsPage() {
@@ -38,10 +38,10 @@ export default async function ProjectsPage() {
         <div className="takdi-panel rounded-[1.7rem] p-5">
           <p className="takdi-stat-label">Browse faster</p>
           <p className="mt-3 text-lg font-semibold tracking-[-0.03em] text-[var(--takdi-text)]">
-            검색, 상태, 날짜 필터를 같은 선상에 모아 복귀 동선을 짧게 만들었습니다.
+            검색과 필터로 원하는 프로젝트를 빠르게 찾을 수 있어요.
           </p>
           <p className="mt-3 text-sm leading-6 text-[var(--takdi-text-muted)]">
-            최근 프로젝트와 저장 템플릿을 같은 표면 언어로 맞춰 작업 전환 시 맥락이 끊기지 않도록 정리했습니다.
+            프로젝트와 템플릿을 한 화면에서 관리하고, 바로 작업을 이어가세요.
           </p>
         </div>
       </section>

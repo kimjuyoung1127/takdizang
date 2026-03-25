@@ -41,7 +41,7 @@ export function VideoUploadZone({
         const result = await uploadAsset(projectId, file, { sourceType: "uploaded", skipValidation: true });
         onVideoChange(result.asset.filePath);
       } catch {
-        toast.error("영상 업로드에 실패했습니다");
+        toast.error("영상을 올리지 못했어요. 다시 시도해주세요.");
       } finally {
         setUploading(false);
       }

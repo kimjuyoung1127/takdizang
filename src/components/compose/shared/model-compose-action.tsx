@@ -79,19 +79,19 @@ export function ModelComposeAction({ projectId, imageUrl, onImageChange }: Props
           const resultAssets = (result as { assets?: Array<{ filePath: string }> }).assets;
           if (resultAssets?.[0]?.filePath) {
             onImageChange(resultAssets[0].filePath);
-            toast.success("모델컷 합성이 완료되었습니다.");
+            toast.success("모델 착용 이미지가 완성됐어요");
             setOpen(false);
           }
           break;
         }
 
         if (result.job.status === "failed") {
-          throw new Error(result.job.error || "모델컷 합성에 실패했습니다.");
+          throw new Error(result.job.error || "모델 합성에 실패했어요. 다시 시도해주세요.");
         }
       }
     } catch (error) {
       if (!abortRef.current) {
-        toast.error(error instanceof Error ? error.message : "모델컷 합성에 실패했습니다.");
+        toast.error(error instanceof Error ? error.message : "모델 합성에 실패했어요. 다시 시도해주세요.");
       }
     } finally {
       setRunning(false);

@@ -28,7 +28,7 @@ export function DraftGeneratorDialog({ open, onClose, projectId, onComplete }: D
   const handleGenerate = useCallback(async () => {
     if (!briefText.trim()) return;
 
-    const confirmed = window.confirm("현재 블록이 새 초안으로 교체됩니다. 계속하시겠습니까?");
+    const confirmed = window.confirm("지금 만든 블록이 새 초안으로 바뀌어요. 계속할까요?");
     if (!confirmed) return;
 
     setPhase("generating-text");
@@ -51,7 +51,7 @@ export function DraftGeneratorDialog({ open, onClose, projectId, onComplete }: D
       setPhase("complete");
       onComplete(doc);
     } catch (err) {
-      setErrorMsg(err instanceof Error ? err.message : "알 수 없는 오류");
+      setErrorMsg(err instanceof Error ? err.message : "알 수 없는 문제가 생겼어요");
       setPhase("error");
     }
   }, [briefText, category, projectId, onComplete]);

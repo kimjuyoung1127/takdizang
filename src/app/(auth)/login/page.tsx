@@ -55,10 +55,10 @@ export default function LoginPage() {
           T
         </div>
         <h1 className="text-xl font-bold text-[var(--takdi-text,#2c2420)]">
-          Takdi Studio 로그인
+          다시 오셨군요!
         </h1>
         <p className="mt-1 text-sm text-[var(--takdi-text-muted,#8c7e6e)]">
-          이메일 또는 Google로 로그인하세요
+          이메일 또는 Google로 로그인해주세요
         </p>
       </div>
 
@@ -89,7 +89,7 @@ export default function LoginPage() {
           disabled={loading}
           className="w-full rounded-xl bg-[linear-gradient(135deg,#d97c67,#b96f46)] px-4 py-3 text-sm font-semibold text-white shadow-md transition-opacity hover:opacity-90 disabled:opacity-50"
         >
-          {loading ? "로그인 중..." : "로그인"}
+          {loading ? "로그인하는 중..." : "로그인"}
         </button>
       </form>
 
@@ -113,7 +113,7 @@ export default function LoginPage() {
       </button>
 
       <p className="text-center text-sm text-[var(--takdi-text-muted,#8c7e6e)]">
-        계정이 없으신가요?{" "}
+        아직 계정이 없으신가요?{" "}
         <Link
           href="/signup"
           className="font-medium text-[var(--takdi-accent)] hover:underline"

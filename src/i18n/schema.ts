@@ -128,6 +128,106 @@ export interface MessageSchema {
     projectNameSuffix: string;
     createProjectFailed: string;
   };
+  editor: {
+    toasts: {
+      structureNeedsRecovery: string;
+      pipelineComplete: string;
+      pipelineFailed: string;
+      pipelineStopped: string;
+      saved: string;
+      saveFailed: string;
+      previewFailed: string;
+      exportComplete: string;
+      exportFailed: string;
+      nameChanged: string;
+      nameChangeFailed: string;
+      structureRecovered: string;
+      recoverySaveFailed: string;
+    };
+    labels: {
+      structureRecoveryTitle: string;
+      structureRecoveryDescription: string;
+      guidedModeNotice: string;
+      emptyCanvasTitle: string;
+      emptyCanvasHint: string;
+      selectNodeHint: string;
+      uploadAfterLoadHint: string;
+      noLogsYet: string;
+      guidedCannotConnect: string;
+      guidedCannotAdd: string;
+      guidedCannotDuplicate: string;
+      guidedReadOnly: string;
+      paletteHint: string;
+    };
+  };
+  aiTools: {
+    videoRender: {
+      title: string;
+      description: string;
+      buttonStart: string;
+      buttonRunning: string;
+      downloadLabel: string;
+      successToast: string;
+      failedToast: string;
+    };
+    thumbnail: {
+      title: string;
+      buttonGenerate: string;
+      buttonRegenerate: string;
+      buttonRunning: string;
+      successToast: string;
+      failedToast: string;
+    };
+    marketingScript: {
+      title: string;
+      buttonGenerate: string;
+      buttonRegenerate: string;
+      buttonRunning: string;
+      copyButton: string;
+      copiedButton: string;
+      copiedToast: string;
+      successToast: string;
+      failedToast: string;
+      parseFailed: string;
+    };
+  };
+  exportDialog: {
+    title: string;
+    modeLabel: string;
+    filenameLabel: string;
+    formatLabel: string;
+    modeSingle: string;
+    modeSplit: string;
+    modeCardNews: string;
+    modeHtml: string;
+    buttonExport: string;
+    buttonExporting: string;
+    exporting: string;
+    copyHtml: string;
+    downloadZip: string;
+    downloadImage: string;
+    noBlocksError: string;
+    captureError: string;
+    imageDownloaded: string;
+    splitDownloaded: string;
+    htmlCopied: string;
+    htmlDownloaded: string;
+    exportFailed: string;
+  };
+  composeToasts: {
+    unknownError: string;
+    noEmptyFields: string;
+    fillEmptyConfirm: string;
+    fillEmptyDone: string;
+    blockGenFailed: string;
+    variationAdded: string;
+    variationFailed: string;
+    aiResultApplied: string;
+    textToImageError: string;
+    imageToTextError: string;
+    draftReplaceConfirm: string;
+    draftError: string;
+  };
   composeShared: {
     unsavedChanges: string;
     allChangesSaved: string;

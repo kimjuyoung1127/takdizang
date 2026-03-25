@@ -31,10 +31,10 @@ export default async function HomePage() {
             <div>
               <p className="takdi-kicker">Start</p>
               <h2 className="mt-2 text-[clamp(1.7rem,2vw,2.4rem)] font-semibold tracking-[-0.04em] text-[var(--takdi-text)]">
-                새 작업 시작
+                어떤 콘텐츠를 만들어볼까요?
               </h2>
               <p className="mt-2 text-sm leading-6 text-[var(--takdi-text-muted)]">
-                자주 쓰는 흐름은 더 빠르게, 직접 업로드는 더 분명하게 구분했습니다.
+                원하는 작업을 선택하면 바로 시작할 수 있어요.
               </p>
             </div>
 
@@ -42,7 +42,7 @@ export default async function HomePage() {
               href="/projects"
               className="inline-flex items-center gap-2 self-start rounded-full border border-[rgb(214_199_184_/_0.78)] bg-[rgb(255_255_255_/_0.76)] px-4 py-2.5 text-sm font-medium text-[var(--takdi-text-muted)] transition hover:border-[rgb(212_184_166_/_0.86)] hover:text-[var(--takdi-text)]"
             >
-              전체 프로젝트 보기
+              모든 프로젝트 보기
               <ArrowRight className="h-4 w-4" />
             </Link>
           </div>

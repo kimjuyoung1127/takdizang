@@ -95,12 +95,12 @@ export function ImageGenerateAction({ projectId, onImageChange, label }: Props) 
         }
 
         if (result.job.status === "failed") {
-          throw new Error(result.job.error || "이미지 생성에 실패했습니다.");
+          throw new Error(result.job.error || "이미지를 만들지 못했어요. 다시 시도해주세요.");
         }
       }
     } catch (error) {
       if (!abortRef.current) {
-        toast.error(error instanceof Error ? error.message : "이미지 생성에 실패했습니다.");
+        toast.error(error instanceof Error ? error.message : "이미지를 만들지 못했어요. 다시 시도해주세요.");
       }
     } finally {
       setRunning(false);
@@ -110,7 +110,7 @@ export function ImageGenerateAction({ projectId, onImageChange, label }: Props) 
   const handleApply = useCallback(() => {
     if (!resultUrl) return;
     onImageChange(resultUrl);
-    toast.success("이미지가 적용되었습니다.");
+    toast.success("이미지를 적용했어요");
     setOpen(false);
     setResultUrl(null);
     setPrompt("");

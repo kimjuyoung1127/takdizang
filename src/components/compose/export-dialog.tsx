@@ -8,6 +8,7 @@ import type { ExportFormat, ExportMode } from "@/lib/block-export";
 import { buildDefaultFilename, captureBlocksAsImage, captureBlocksAsSplitImages, exportToDownload } from "@/lib/block-export";
 import { blocksToHtml } from "@/services/html-exporter";
 import { toast } from "sonner";
+import { useT } from "@/i18n/use-t";
 import type { Block } from "@/types/blocks";
 import { WORKSPACE_CONTROL, WORKSPACE_SURFACE, WORKSPACE_TEXT } from "@/lib/workspace-surface";
 
@@ -30,6 +31,7 @@ export function ExportDialog({
   platformWidth,
   blocks,
 }: ExportDialogProps) {
+  const { messages } = useT();
   const [format, setFormat] = useState<ExportFormat>("jpg");
   const [mode, setMode] = useState<ExportMode>("single");
   const [htmlMode, setHtmlMode] = useState(false);
@@ -54,7 +56,7 @@ export function ExportDialog({
     }
 
     if (!captureRef.current) {
-      toast.error("미리보기를 로드할 수 없습니다. 페이지를 새로고침해주세요");
+      toast.error(messages.exportDialog.captureError);
       return;
     }
 
@@ -68,7 +70,7 @@ export function ExportDialog({
         ).filter((el) => !el.closest("[data-hidden]"));
 
         if (blockEls.length === 0) {
-          toast.error("내보낼 블록이 없습니다");
+          toast.error(messages.exportDialog.noBlocksError);
           return;
         }
 
@@ -80,7 +82,7 @@ export function ExportDialog({
         });
         const label = mode === "card-news" ? "카드뉴스" : "분할 이미지";
         exportToDownload(zipBlob, `${filename}.zip`);
-        toast.success(`${label} ${blockEls.length}장 ZIP 다운로드 완료`);
+        toast.success(`${label} ${blockEls.length}${messages.exportDialog.splitDownloaded}`);
       } else {
         const blob = await captureBlocksAsImage(captureRef.current, {
           width: platformWidth,
@@ -88,11 +90,11 @@ export function ExportDialog({
           scale: 2,
         });
         exportToDownload(blob, `${filename}.${format}`);
-        toast.success("이미지 다운로드 완료");
+        toast.success(messages.exportDialog.imageDownloaded);
       }
       onClose();
     } catch (err) {
-      toast.error(`내보내기 실패: ${err instanceof Error ? err.message : "알 수 없는 오류"}`);
+      toast.error(`${messages.exportDialog.exportFailed}: ${err instanceof Error ? err.message : "잠시 후 다시 시도해주세요"}`);
     } finally {
       setExporting(false);
     }
@@ -100,17 +102,17 @@ export function ExportDialog({
 
   const handleHtmlExport = () => {
     if (!blocks || blocks.length === 0) {
-      toast.error("내보낼 블록이 없습니다");
+      toast.error(messages.exportDialog.noBlocksError);
       return;
     }
     const html = blocksToHtml(blocks, platformWidth);
     navigator.clipboard.writeText(html).then(
-      () => toast.success("HTML 코드가 클립보드에 복사되었습니다"),
+      () => toast.success(messages.exportDialog.htmlCopied),
       () => {
         // Fallback: download as file
         const blob = new Blob([html], { type: "text/html;charset=utf-8" });
         exportToDownload(blob, `${filename}.html`);
-        toast.success("HTML 파일 다운로드 완료");
+        toast.success(messages.exportDialog.htmlDownloaded);
       },
     );
   };
@@ -122,14 +124,14 @@ export function ExportDialog({
         onClick={(e) => e.stopPropagation()}
       >
         <div className="mb-4 flex items-center justify-between">
-          <h2 className={`text-sm font-semibold ${WORKSPACE_TEXT.title}`}>내보내기</h2>
+          <h2 className={`text-sm font-semibold ${WORKSPACE_TEXT.title}`}>{messages.exportDialog.title}</h2>
           <button onClick={onClose} className={`${WORKSPACE_TEXT.muted} hover:text-[var(--takdi-text)]`}>
             <X className="h-4 w-4" />
           </button>
         </div>
 
         {/* 내보내기 모드 */}
-        <label className={`mb-1 block text-xs ${WORKSPACE_TEXT.body}`}>내보내기 방식</label>
+        <label className={`mb-1 block text-xs ${WORKSPACE_TEXT.body}`}>{messages.exportDialog.modeLabel}</label>
         <div className="mb-4 flex gap-2">
           <button
             onClick={() => { setMode("single"); setHtmlMode(false); }}
@@ -140,7 +142,7 @@ export function ExportDialog({
             }`}
           >
             <Image className="h-3.5 w-3.5" />
-            단일 이미지
+            {messages.exportDialog.modeSingle}
           </button>
           <button
             onClick={() => { setMode("split"); setHtmlMode(false); }}
@@ -151,7 +153,7 @@ export function ExportDialog({
             }`}
           >
             <FileArchive className="h-3.5 w-3.5" />
-            분할 (ZIP)
+            {messages.exportDialog.modeSplit}
           </button>
           <button
             onClick={() => { setMode("card-news"); setHtmlMode(false); }}
@@ -162,7 +164,7 @@ export function ExportDialog({
             }`}
           >
             <LayoutGrid className="h-3.5 w-3.5" />
-            카드뉴스
+            {messages.exportDialog.modeCardNews}
           </button>
           <button
             onClick={() => setHtmlMode(true)}
@@ -178,7 +180,7 @@ export function ExportDialog({
         </div>
 
         {/* 파일명 */}
-        <label className={`mb-1 block text-xs ${WORKSPACE_TEXT.body}`}>파일명</label>
+        <label className={`mb-1 block text-xs ${WORKSPACE_TEXT.body}`}>{messages.exportDialog.filenameLabel}</label>
         <div className="mb-4 flex items-center gap-1">
           <input
             ref={inputRef}
@@ -194,7 +196,7 @@ export function ExportDialog({
         {/* 포맷 선택 (이미지 모드만) */}
         {!htmlMode && (
           <>
-            <label className={`mb-1 block text-xs ${WORKSPACE_TEXT.body}`}>포맷</label>
+            <label className={`mb-1 block text-xs ${WORKSPACE_TEXT.body}`}>{messages.exportDialog.formatLabel}</label>
             <div className="mb-6 flex gap-2">
               {(["png", "jpg"] as const).map((f) => (
                 <button
@@ -237,12 +239,12 @@ export function ExportDialog({
             <Download className="h-4 w-4" />
           )}
           {exporting
-            ? "내보내는 중..."
+            ? messages.exportDialog.exporting
             : htmlMode
-              ? "HTML 복사"
+              ? messages.exportDialog.copyHtml
               : mode === "split" || mode === "card-news"
-                ? "ZIP 다운로드"
-                : "이미지 다운로드"}
+                ? messages.exportDialog.downloadZip
+                : messages.exportDialog.downloadImage}
         </Button>
       </div>
     </div>

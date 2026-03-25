@@ -66,7 +66,7 @@ export function NodePalette({ mode, disabled = false }: NodePaletteProps) {
         <p className="takdi-kicker">Pipeline blocks</p>
         <h2 className={`mt-3 text-lg font-semibold tracking-[-0.03em] ${WORKSPACE_TEXT.title}`}>작업 단계</h2>
         <p className={`mt-2 text-sm leading-6 ${WORKSPACE_TEXT.muted}`}>
-          {disabled ? "가이드형 모드에서는 내부 구조만 확인할 수 있습니다." : "필요한 단계를 캔버스로 추가하세요."}
+          {disabled ? "가이드형 모드에서는 구조를 확인만 할 수 있어요." : "필요한 단계를 캔버스로 드래그해서 추가하세요."}
         </p>
       </div>
 

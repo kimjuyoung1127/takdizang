@@ -331,7 +331,7 @@ export const NodeCanvas = forwardRef<NodeCanvasHandle, NodeCanvasProps>(function
   const onConnect = useCallback(
     (params: Connection) => {
       if (!canEditEdges) {
-        onRestrictionViolation?.("가이드형 모드에서는 단계 연결을 수정할 수 없습니다.");
+        onRestrictionViolation?.("가이드형 모드에서는 단계 연결을 바꿀 수 없어요.");
         return;
       }
       setEdges((currentEdges) => addEdge(params, currentEdges));
@@ -348,7 +348,7 @@ export const NodeCanvas = forwardRef<NodeCanvasHandle, NodeCanvasProps>(function
     (event: React.DragEvent) => {
       event.preventDefault();
       if (!canInsertNodes) {
-        onRestrictionViolation?.("가이드형 모드에서는 단계를 추가할 수 없습니다.");
+        onRestrictionViolation?.("가이드형 모드에서는 단계를 추가할 수 없어요.");
         return;
       }
       const type = event.dataTransfer.getData("application/reactflow-type") as FlowNodeType;
@@ -405,7 +405,7 @@ export const NodeCanvas = forwardRef<NodeCanvasHandle, NodeCanvasProps>(function
       return;
     }
     if (!canDuplicateNodes) {
-      onRestrictionViolation?.("가이드형 모드에서는 단계를 복제할 수 없습니다.");
+      onRestrictionViolation?.("가이드형 모드에서는 단계를 복제할 수 없어요.");
       setContextMenu(null);
       return;
     }
@@ -519,8 +519,8 @@ export const NodeCanvas = forwardRef<NodeCanvasHandle, NodeCanvasProps>(function
         <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
           <div className={`flex flex-col items-center gap-3 rounded-[28px] px-8 py-6 ${WORKSPACE_SURFACE.panelStrong}`}>
             <MousePointerClick className={`h-8 w-8 ${WORKSPACE_TEXT.accent}`} />
-            <p className={`text-sm font-medium ${WORKSPACE_TEXT.body}`}>작업 캔버스가 비어 있습니다.</p>
-            <p className={`text-xs ${WORKSPACE_TEXT.muted}`}>왼쪽 패널에서 단계를 추가해 시작하세요.</p>
+            <p className={`text-sm font-medium ${WORKSPACE_TEXT.body}`}>아직 캔버스가 비어있어요</p>
+            <p className={`text-xs ${WORKSPACE_TEXT.muted}`}>왼쪽에서 단계를 드래그해서 추가해보세요.</p>
           </div>
         </div>
       ) : null}

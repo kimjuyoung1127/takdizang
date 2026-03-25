@@ -181,6 +181,8 @@
       linear-gradient(180deg, #f8f4ee 0%, #efe7dc 48%, #ece3d6 100%);
     color: var(--takdi-text);
     text-rendering: optimizeLegibility;
+    word-break: keep-all;
+    overflow-wrap: break-word;
   }
 }
 

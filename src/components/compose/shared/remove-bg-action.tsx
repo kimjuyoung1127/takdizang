@@ -64,18 +64,18 @@ export function RemoveBgAction({ projectId, imageUrl, onImageChange }: Props) {
           const resultAssets = (result as { assets?: Array<{ filePath: string }> }).assets;
           if (resultAssets?.[0]?.filePath) {
             onImageChange(resultAssets[0].filePath);
-            toast.success("배경 제거가 완료되었습니다.");
+            toast.success("배경을 깔끔하게 제거했어요");
           }
           break;
         }
 
         if (result.job.status === "failed") {
-          throw new Error(result.job.error || "배경 제거에 실패했습니다.");
+          throw new Error(result.job.error || "배경을 제거하지 못했어요. 다시 시도해주세요.");
         }
       }
     } catch (error) {
       if (!abortRef.current) {
-        toast.error(error instanceof Error ? error.message : "배경 제거에 실패했습니다.");
+        toast.error(error instanceof Error ? error.message : "배경을 제거하지 못했어요. 다시 시도해주세요.");
       }
     } finally {
       setRunning(false);

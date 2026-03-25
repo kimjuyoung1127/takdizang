@@ -57,7 +57,7 @@ function EmptyPanel({ projectName, nodeCount }: { projectName?: string; nodeCoun
           <p className={`text-base font-semibold ${WORKSPACE_TEXT.title}`}>{projectName ?? "프로젝트"}</p>
           <p className={`mt-2 text-sm ${WORKSPACE_TEXT.body}`}>작업 단계 {nodeCount ?? 0}개</p>
           <p className={`mt-4 text-sm leading-6 ${WORKSPACE_TEXT.muted}`}>
-            단계 카드를 선택하면 필요한 입력과 현재 상태를 확인할 수 있습니다.
+            단계 카드를 선택하면 설정과 현재 상태를 확인할 수 있어요.
           </p>
         </div>
       </div>
@@ -422,7 +422,7 @@ export function PropertiesPanel({
                   ))}
                 </>
               ) : (
-                <p className={`text-sm leading-6 ${WORKSPACE_TEXT.muted}`}>프로젝트를 불러온 뒤 파일을 업로드할 수 있습니다.</p>
+                <p className={`text-sm leading-6 ${WORKSPACE_TEXT.muted}`}>프로젝트를 불러온 뒤 파일을 올릴 수 있어요.</p>
               )}
             </TabsContent>
           </Tabs>

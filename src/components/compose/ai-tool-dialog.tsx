@@ -13,6 +13,7 @@ import {
   X,
 } from "lucide-react";
 import { toast } from "sonner";
+import { useT } from "@/i18n/use-t";
 import {
   startRender,
   pollRenderStatus,
@@ -22,6 +23,7 @@ import {
   pollGenerateMarketingScript,
 } from "@/lib/api-client";
 import { WORKSPACE_CONTROL, WORKSPACE_SURFACE, WORKSPACE_TEXT } from "@/lib/workspace-surface";
+import type { MessageSchema } from "@/i18n/schema";
 
 interface AiToolDialogProps {
   open: boolean;
@@ -33,6 +35,8 @@ interface AiToolDialogProps {
 const POLL_INTERVAL = 2000;
 
 export function AiToolDialog({ open, toolType, projectId, onClose }: AiToolDialogProps) {
+  const { messages } = useT();
+
   useEffect(() => {
     if (!open) return;
     function onKeyDown(e: KeyboardEvent) {
@@ -58,15 +62,15 @@ export function AiToolDialog({ open, toolType, projectId, onClose }: AiToolDialo
           <X className="h-4 w-4" />
         </button>
 
-        {toolType === "video" && <VideoRenderTool projectId={projectId} />}
-        {toolType === "thumbnail" && <ThumbnailTool projectId={projectId} />}
-        {toolType === "script" && <MarketingScriptTool projectId={projectId} />}
+        {toolType === "video" && <VideoRenderTool projectId={projectId} messages={messages} />}
+        {toolType === "thumbnail" && <ThumbnailTool projectId={projectId} messages={messages} />}
+        {toolType === "script" && <MarketingScriptTool projectId={projectId} messages={messages} />}
       </div>
     </div>
   );
 }
 
-function VideoRenderTool({ projectId }: { projectId: string }) {
+function VideoRenderTool({ projectId, messages }: { projectId: string; messages: MessageSchema }) {
   const [running, setRunning] = useState(false);
   const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
   const abortRef = useRef(false);
@@ -96,15 +100,15 @@ function VideoRenderTool({ projectId }: { projectId: string }) {
         if (result.status === "done") {
           const artifact = result.artifact as { filePath?: string } | undefined;
           if (artifact?.filePath) setDownloadUrl(artifact.filePath);
-          toast.success("영상 렌더링이 완료되었습니다.");
+          toast.success(messages.aiTools.videoRender.successToast);
           break;
         }
         if (result.status === "failed") {
-          throw new Error("영상 렌더링에 실패했습니다.");
+          throw new Error("영상을 만들지 못했어요. 다시 시도해주세요.");
         }
       }
     } catch (error) {
-      if (!abortRef.current) toast.error(error instanceof Error ? error.message : "영상 렌더링 실패");
+      if (!abortRef.current) toast.error(error instanceof Error ? error.message : messages.aiTools.videoRender.failedToast);
     } finally {
       setRunning(false);
     }
@@ -114,9 +118,9 @@ function VideoRenderTool({ projectId }: { projectId: string }) {
     <div className="space-y-4">
       <div className="flex items-center gap-2">
         <Film className={`h-5 w-5 ${WORKSPACE_TEXT.accent}`} />
-        <h3 className={`text-sm font-semibold ${WORKSPACE_TEXT.title}`}>영상 렌더링</h3>
+        <h3 className={`text-sm font-semibold ${WORKSPACE_TEXT.title}`}>{messages.aiTools.videoRender.title}</h3>
       </div>
-      <p className={`text-xs ${WORKSPACE_TEXT.muted}`}>Remotion 기반으로 영상을 렌더링합니다.</p>
+      <p className={`text-xs ${WORKSPACE_TEXT.muted}`}>{messages.aiTools.videoRender.description}</p>
       {downloadUrl && (
         <a
           href={downloadUrl}
@@ -124,7 +128,7 @@ function VideoRenderTool({ projectId }: { projectId: string }) {
           className={`flex items-center gap-1.5 rounded-2xl px-3 py-2 text-xs font-medium ${WORKSPACE_CONTROL.subtleButton}`}
         >
           <Download className="h-3.5 w-3.5" />
-          영상 다운로드
+          {messages.aiTools.videoRender.downloadLabel}
         </a>
       )}
       <button
@@ -134,16 +138,16 @@ function VideoRenderTool({ projectId }: { projectId: string }) {
         className={`flex w-full items-center justify-center gap-1.5 rounded-2xl px-3 py-2.5 text-xs font-medium ${WORKSPACE_CONTROL.accentButton} disabled:opacity-50`}
       >
         {running ? (
-          <><Loader2 className="h-3.5 w-3.5 animate-spin" />렌더링 중...</>
+          <><Loader2 className="h-3.5 w-3.5 animate-spin" />{messages.aiTools.videoRender.buttonRunning}</>
         ) : (
-          <><Film className="h-3.5 w-3.5" />렌더링 시작</>
+          <><Film className="h-3.5 w-3.5" />{messages.aiTools.videoRender.buttonStart}</>
         )}
       </button>
     </div>
   );
 }
 
-function ThumbnailTool({ projectId }: { projectId: string }) {
+function ThumbnailTool({ projectId, messages }: { projectId: string; messages: MessageSchema }) {
   const [running, setRunning] = useState(false);
   const [resultUrl, setResultUrl] = useState<string | null>(null);
   const abortRef = useRef(false);
@@ -173,15 +177,15 @@ function ThumbnailTool({ projectId }: { projectId: string }) {
         if (result.job.status === "done") {
           const artifacts = (result as { artifacts?: Array<{ filePath: string }> }).artifacts;
           if (artifacts?.[0]?.filePath) setResultUrl(artifacts[0].filePath);
-          toast.success("썸네일이 생성되었습니다.");
+          toast.success(messages.aiTools.thumbnail.successToast);
           break;
         }
         if (result.job.status === "failed") {
-          throw new Error(result.job.error || "썸네일 생성 실패");
+          throw new Error(result.job.error || messages.aiTools.thumbnail.failedToast);
         }
       }
     } catch (error) {
-      if (!abortRef.current) toast.error(error instanceof Error ? error.message : "썸네일 생성 실패");
+      if (!abortRef.current) toast.error(error instanceof Error ? error.message : messages.aiTools.thumbnail.failedToast);
     } finally {
       setRunning(false);
     }
@@ -191,7 +195,7 @@ function ThumbnailTool({ projectId }: { projectId: string }) {
     <div className="space-y-4">
       <div className="flex items-center gap-2">
         <ImageIcon className={`h-5 w-5 ${WORKSPACE_TEXT.accent}`} />
-        <h3 className={`text-sm font-semibold ${WORKSPACE_TEXT.title}`}>썸네일 생성</h3>
+        <h3 className={`text-sm font-semibold ${WORKSPACE_TEXT.title}`}>{messages.aiTools.thumbnail.title}</h3>
       </div>
       {resultUrl && (
         <div className="space-y-1.5">
@@ -215,16 +219,16 @@ function ThumbnailTool({ projectId }: { projectId: string }) {
         className={`flex w-full items-center justify-center gap-1.5 rounded-2xl px-3 py-2.5 text-xs font-medium ${WORKSPACE_CONTROL.accentButton} disabled:opacity-50`}
       >
         {running ? (
-          <><Loader2 className="h-3.5 w-3.5 animate-spin" />생성 중...</>
+          <><Loader2 className="h-3.5 w-3.5 animate-spin" />{messages.aiTools.thumbnail.buttonRunning}</>
         ) : (
-          <><ImageIcon className="h-3.5 w-3.5" />{resultUrl ? "다시 생성" : "생성하기"}</>
+          <><ImageIcon className="h-3.5 w-3.5" />{resultUrl ? messages.aiTools.thumbnail.buttonRegenerate : messages.aiTools.thumbnail.buttonGenerate}</>
         )}
       </button>
     </div>
   );
 }
 
-function MarketingScriptTool({ projectId }: { projectId: string }) {
+function MarketingScriptTool({ projectId, messages }: { projectId: string; messages: MessageSchema }) {
   const [running, setRunning] = useState(false);
   const [scriptText, setScriptText] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
@@ -269,18 +273,18 @@ function MarketingScriptTool({ projectId }: { projectId: string }) {
                 setScriptText(lines.join("\n"));
               }
             } catch {
-              setScriptText("스크립트 파싱 실패");
+              setScriptText(messages.aiTools.marketingScript.parseFailed);
             }
           }
-          toast.success("마케팅 스크립트가 생성되었습니다.");
+          toast.success(messages.aiTools.marketingScript.successToast);
           break;
         }
         if (result.job.status === "failed") {
-          throw new Error(result.job.error || "스크립트 생성 실패");
+          throw new Error(result.job.error || messages.aiTools.marketingScript.failedToast);
         }
       }
     } catch (error) {
-      if (!abortRef.current) toast.error(error instanceof Error ? error.message : "스크립트 생성 실패");
+      if (!abortRef.current) toast.error(error instanceof Error ? error.message : messages.aiTools.marketingScript.failedToast);
     } finally {
       setRunning(false);
     }
@@ -290,7 +294,7 @@ function MarketingScriptTool({ projectId }: { projectId: string }) {
     if (!scriptText) return;
     await navigator.clipboard.writeText(scriptText);
     setCopied(true);
-    toast.success("클립보드에 복사되었습니다.");
+    toast.success(messages.aiTools.marketingScript.copiedToast);
     setTimeout(() => setCopied(false), 2000);
   }, [scriptText]);
 
@@ -298,7 +302,7 @@ function MarketingScriptTool({ projectId }: { projectId: string }) {
     <div className="space-y-4">
       <div className="flex items-center gap-2">
         <FileText className={`h-5 w-5 ${WORKSPACE_TEXT.accent}`} />
-        <h3 className={`text-sm font-semibold ${WORKSPACE_TEXT.title}`}>마케팅 스크립트</h3>
+        <h3 className={`text-sm font-semibold ${WORKSPACE_TEXT.title}`}>{messages.aiTools.marketingScript.title}</h3>
       </div>
       {scriptText && (
         <div className="space-y-1.5">
@@ -311,7 +315,7 @@ function MarketingScriptTool({ projectId }: { projectId: string }) {
             className={`flex w-full items-center justify-center gap-1.5 rounded-2xl px-3 py-2 text-xs font-medium ${WORKSPACE_CONTROL.subtleButton}`}
           >
             {copied ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
-            {copied ? "복사됨" : "복사하기"}
+            {copied ? messages.aiTools.marketingScript.copiedButton : messages.aiTools.marketingScript.copyButton}
           </button>
         </div>
       )}
@@ -322,9 +326,9 @@ function MarketingScriptTool({ projectId }: { projectId: string }) {
         className={`flex w-full items-center justify-center gap-1.5 rounded-2xl px-3 py-2.5 text-xs font-medium ${WORKSPACE_CONTROL.accentButton} disabled:opacity-50`}
       >
         {running ? (
-          <><Loader2 className="h-3.5 w-3.5 animate-spin" />생성 중...</>
+          <><Loader2 className="h-3.5 w-3.5 animate-spin" />{messages.aiTools.marketingScript.buttonRunning}</>
         ) : (
-          <><FileText className="h-3.5 w-3.5" />{scriptText ? "다시 생성" : "생성하기"}</>
+          <><FileText className="h-3.5 w-3.5" />{scriptText ? messages.aiTools.marketingScript.buttonRegenerate : messages.aiTools.marketingScript.buttonGenerate}</>
         )}
       </button>
     </div>

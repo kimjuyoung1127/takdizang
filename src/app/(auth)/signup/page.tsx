@@ -50,9 +50,9 @@ export default function SignupPage() {
           이메일을 확인해주세요
         </h1>
         <p className="text-sm text-[var(--takdi-text-muted,#8c7e6e)]">
-          <strong>{email}</strong>로 확인 링크를 보냈습니다.
+          <strong>{email}</strong>로 확인 메일을 보냈어요.
           <br />
-          메일의 링크를 클릭하면 가입이 완료됩니다.
+          메일의 링크를 클릭하면 가입이 완료돼요.
         </p>
         <Link
           href="/login"
@@ -71,10 +71,10 @@ export default function SignupPage() {
           T
         </div>
         <h1 className="text-xl font-bold text-[var(--takdi-text,#2c2420)]">
-          Takdi Studio 회원가입
+          Takdi Studio 시작하기
         </h1>
         <p className="mt-1 text-sm text-[var(--takdi-text-muted,#8c7e6e)]">
-          무료로 시작하세요
+          무료로 가입하고 바로 만들어보세요
         </p>
       </div>
 
@@ -114,12 +114,12 @@ export default function SignupPage() {
           disabled={loading}
           className="w-full rounded-xl bg-[linear-gradient(135deg,#d97c67,#b96f46)] px-4 py-3 text-sm font-semibold text-white shadow-md transition-opacity hover:opacity-90 disabled:opacity-50"
         >
-          {loading ? "가입 중..." : "가입하기"}
+          {loading ? "가입하는 중..." : "무료로 시작하기"}
         </button>
       </form>
 
       <p className="text-center text-sm text-[var(--takdi-text-muted,#8c7e6e)]">
-        이미 계정이 있으신가요?{" "}
+        이미 가입하셨나요?{" "}
         <Link
           href="/login"
           className="font-medium text-[var(--takdi-accent)] hover:underline"

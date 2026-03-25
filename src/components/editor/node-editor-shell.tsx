@@ -5,6 +5,7 @@ import Link from "next/link";
 import type { Edge, Node } from "@xyflow/react";
 import { AlertTriangle, Home, LayoutPanelTop, RefreshCcw } from "lucide-react";
 import { toast } from "sonner";
+import { useT } from "@/i18n/use-t";
 import { FloatingToolbar } from "./floating-toolbar";
 import { NodeCanvas, type NodeCanvasHandle, type NodeData } from "./node-canvas";
 import { NodePalette } from "./node-palette";
@@ -67,6 +68,7 @@ function GuidedGraphRecoveryPanel({
   repairStepLabels: string[];
   onRepair: () => void;
 }) {
+  const { messages } = useT();
   return (
     <div className="flex h-full items-center justify-center px-6 pb-6 pt-28">
       <div className={`w-full max-w-3xl rounded-[32px] p-8 ${WORKSPACE_SURFACE.panelStrong}`}>
@@ -77,11 +79,10 @@ function GuidedGraphRecoveryPanel({
           <div className="flex-1">
             <p className="text-sm font-semibold text-[rgb(184_121_78)]">구조 복구 필요</p>
             <h2 className={`mt-2 text-2xl font-semibold ${WORKSPACE_TEXT.title}`}>
-              {mode} 모드의 저장된 그래프가 가이드형 규칙과 맞지 않습니다.
+              {mode} {messages.editor.labels.structureRecoveryTitle}
             </h2>
             <p className={`mt-3 text-sm leading-6 ${WORKSPACE_TEXT.body}`}>
-              이 모드는 단계형 자동화 편집기입니다. 단계 중복이나 임의 연결이 포함되면 결과가 불명확해질 수 있어
-              편집과 실행을 잠시 막고 복구를 먼저 안내합니다.
+              {messages.editor.labels.structureRecoveryDescription}
             </p>
           </div>
         </div>
@@ -128,6 +129,7 @@ export function NodeEditorShell({
   initialGraph,
   initialShortformState,
 }: NodeEditorShellProps) {
+  const { messages } = useT();
   const guidedMode = isGuidedMode(mode);
 
   const [name, setName] = useState(projectName);
@@ -285,7 +287,7 @@ export function NodeEditorShell({
   const ensureRunnableGraph = useCallback(() => {
     const validation = validateEditorGraph(mode, canvasStateRef.current.nodes, canvasStateRef.current.edges);
     if (guidedMode && !validation.valid) {
-      toast.error("저장된 구조에 문제가 있어 먼저 복구가 필요합니다.");
+      toast.error(messages.editor.toasts.structureNeedsRecovery);
       return false;
     }
     return true;
@@ -455,13 +457,13 @@ export function NodeEditorShell({
       if (!abortRef.current) {
         await syncProjectState();
         setPipelineStep("done");
-        toast.success("작업이 완료되었습니다. 미리보기 또는 내보내기를 진행하세요.");
+        toast.success(messages.editor.toasts.pipelineComplete);
       }
     } catch (error) {
       if (!abortRef.current) {
         const message = error instanceof Error ? error.message : "알 수 없는 오류";
         setPipelineStep("error");
-        toast.error(`실행 실패: ${message}`);
+        toast.error(`${messages.editor.toasts.pipelineFailed}: ${message}`);
       }
     }
   }, [ensureRunnableGraph, globalRatio, mode, pipelineStep, projectId, shortformState, syncProjectState]);
@@ -470,7 +472,7 @@ export function NodeEditorShell({
     abortRef.current = true;
     setPipelineStep("idle");
     canvasRef.current?.resetEdgeGlow();
-    toast("현재 작업을 중단했습니다.");
+    toast(messages.editor.toasts.pipelineStopped);
   }, []);
 
   const handleSave = useCallback(async () => {
@@ -484,10 +486,10 @@ export function NodeEditorShell({
     setSaving(true);
     try {
       await syncProjectState();
-      toast.success("저장되었습니다.");
+      toast.success(messages.editor.toasts.saved);
     } catch (error) {
       const message = error instanceof Error ? error.message : "저장 실패";
-      toast.error(`저장 실패: ${message}`);
+      toast.error(`${messages.editor.toasts.saveFailed}: ${message}`);
     } finally {
       setSaving(false);
     }
@@ -502,7 +504,7 @@ export function NodeEditorShell({
       window.open(`/projects/${projectId}/preview?templateKey=${encodeURIComponent(globalRatio)}`, "_blank");
     } catch (error) {
       const message = error instanceof Error ? error.message : "미리보기 준비 실패";
-      toast.error(`미리보기 실패: ${message}`);
+      toast.error(`${messages.editor.toasts.previewFailed}: ${message}`);
     }
   }, [ensureRunnableGraph, globalRatio, projectId]);
 
@@ -522,11 +524,11 @@ export function NodeEditorShell({
       await pollUntilDone(() => pollExport(projectId, job.jobId), "내보내기");
       canvasRef.current?.updateNodesByType("export", { status: "exported" });
       await syncProjectState();
-      toast.success("내보내기가 완료되었습니다.");
+      toast.success(messages.editor.toasts.exportComplete);
     } catch (error) {
       canvasRef.current?.updateNodesByType("export", { status: "failed" });
       const message = error instanceof Error ? error.message : "내보내기 실패";
-      toast.error(`내보내기 실패: ${message}`);
+      toast.error(`${messages.editor.toasts.exportFailed}: ${message}`);
     } finally {
       setExporting(false);
     }
@@ -542,10 +544,10 @@ export function NodeEditorShell({
 
     try {
       await syncProjectState({ name: trimmed });
-      toast.success("프로젝트 이름이 변경되었습니다.");
+      toast.success(messages.editor.toasts.nameChanged);
     } catch {
       setName(projectName);
-      toast.error("이름 변경에 실패했습니다.");
+      toast.error(messages.editor.toasts.nameChangeFailed);
     }
   }, [name, projectName, syncProjectState]);
 
@@ -558,10 +560,10 @@ export function NodeEditorShell({
 
     try {
       await syncProjectState();
-      toast.success("가이드형 기본 구조로 복구했습니다.");
+      toast.success(messages.editor.toasts.structureRecovered);
     } catch (error) {
       const message = error instanceof Error ? error.message : "복구 저장 실패";
-      toast.error(`복구 저장 실패: ${message}`);
+      toast.error(`${messages.editor.toasts.recoverySaveFailed}: ${message}`);
     }
   }, [mode, syncProjectState]);
 
@@ -665,7 +667,7 @@ export function NodeEditorShell({
           ratio={globalRatio}
           helperText={
             guidedReadOnlyStructure && !invalidGuidedGraph
-              ? "가이드형 모드입니다.\n이 모드는 단계당 1개만 사용됩니다."
+              ? messages.editor.labels.guidedModeNotice
               : null
           }
           onRatioChange={setGlobalRatio}

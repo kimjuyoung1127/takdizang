@@ -158,7 +158,7 @@ export function BlockContextMenu({
       {isTextBlock && (
         <MenuItem
           icon={<Pencil className="h-3.5 w-3.5 text-blue-500" />}
-          label="AI 문구 생성"
+          label="AI로 문구 만들기"
           credit="3"
           onClick={() => { onBlockText(blockId); onClose(); }}
         />
@@ -166,7 +166,7 @@ export function BlockContextMenu({
       {isTextBlock && (
         <MenuItem
           icon={<RefreshCw className="h-3.5 w-3.5 text-blue-500" />}
-          label="텍스트 다시 쓰기"
+          label="다른 톤으로 다시 쓰기"
           credit="3"
           onClick={() => { onTextRewrite(blockId); onClose(); }}
         />
@@ -174,7 +174,7 @@ export function BlockContextMenu({
       {isImageBlock && (
         <MenuItem
           icon={<ImagePlus className="h-3.5 w-3.5 text-emerald-500" />}
-          label="AI 이미지 생성"
+          label="AI로 이미지 만들기"
           credit="10"
           onClick={() => { onImageGen(blockId); onClose(); }}
         />
@@ -182,7 +182,7 @@ export function BlockContextMenu({
       {isImageBlock && (
         <MenuItem
           icon={<Wand2 className="h-3.5 w-3.5 text-emerald-500" />}
-          label="배경 합성"
+          label="배경 바꾸기"
           credit="8"
           onClick={() => { onSceneCompose(blockId); onClose(); }}
         />
@@ -190,7 +190,7 @@ export function BlockContextMenu({
       {isImageBlock && (
         <MenuItem
           icon={<UserRound className="h-3.5 w-3.5 text-emerald-500" />}
-          label="모델컷 합성"
+          label="모델 착용 합성"
           credit="8"
           onClick={() => { onModelCompose(blockId); onClose(); }}
         />
@@ -210,7 +210,7 @@ export function BlockContextMenu({
       <MenuSectionLabel label="편집" />
       <MenuItem
         icon={<CopyPlus className="h-3.5 w-3.5" />}
-        label="비슷한 버전 추가"
+        label="비슷한 버전 만들기"
         credit="3"
         onClick={() => { onAddVariation(blockId); onClose(); }}
       />
